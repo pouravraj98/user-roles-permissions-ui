@@ -11,6 +11,24 @@ const GroupDetails = () => {
   const [selectedScope, setSelectedScope] = useState('admin');
   const [editingScope, setEditingScope] = useState(null);
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [pendingSaveScope, setPendingSaveScope] = useState(null);
+
+  const handleSaveClick = (scope) => {
+    setPendingSaveScope(scope);
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirmSave = () => {
+    setEditingScope(null);
+    setShowConfirmDialog(false);
+    setPendingSaveScope(null);
+  };
+
+  const handleCancelSave = () => {
+    setShowConfirmDialog(false);
+    setPendingSaveScope(null);
+  };
 
   // Sample members data
   const members = [
@@ -138,6 +156,40 @@ const GroupDetails = () => {
     </span>
   );
 
+  // Confirmation Dialog Component
+  const ConfirmationDialog = () => (
+    <>
+      <div className="fixed inset-0 bg-black/50 z-40" onClick={handleCancelSave} />
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
+          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-green-100 mx-auto mb-4">
+            <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 text-center mb-2">Save Changes?</h3>
+          <p className="text-sm text-gray-500 text-center mb-6">
+            You are about to update the permissions for <strong>{scopeConfig[pendingSaveScope]?.label}</strong> scope. This will affect all members with this role in the group.
+          </p>
+          <div className="flex gap-3">
+            <button
+              onClick={handleCancelSave}
+              className="flex-1 px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleConfirmSave}
+              className="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors"
+            >
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+
   // Permission Table Component
   const PermissionTable = ({ scope, isEditable, onEdit, onCancel, onSave, showHeader = true }) => (
     <div className={`bg-white ${showHeader ? 'rounded-xl border border-gray-200' : ''}`}>
@@ -217,7 +269,7 @@ const GroupDetails = () => {
         <div className="text-sm text-gray-600">Configure permissions for <strong>{scopeConfig[selectedScope].label}</strong> scope. These settings control what members with this scope can do in the group.</div>
       </div>
       <div className="rounded-t-none overflow-hidden">
-        <PermissionTable scope={selectedScope} isEditable={editingScope === selectedScope} onEdit={() => setEditingScope(selectedScope)} onCancel={() => setEditingScope(null)} onSave={() => setEditingScope(null)} />
+        <PermissionTable scope={selectedScope} isEditable={editingScope === selectedScope} onEdit={() => setEditingScope(selectedScope)} onCancel={() => setEditingScope(null)} onSave={() => handleSaveClick(selectedScope)} />
       </div>
     </div>
   );
@@ -259,7 +311,7 @@ const GroupDetails = () => {
           </div>
           <div className="text-sm text-gray-600">Configuring permissions for <strong>{scopeConfig[selectedScope].label}</strong>. Changes will apply to all members with this scope.</div>
         </div>
-        <PermissionTable scope={selectedScope} isEditable={editingScope === selectedScope} onEdit={() => setEditingScope(selectedScope)} onCancel={() => setEditingScope(null)} onSave={() => setEditingScope(null)} />
+        <PermissionTable scope={selectedScope} isEditable={editingScope === selectedScope} onEdit={() => setEditingScope(selectedScope)} onCancel={() => setEditingScope(null)} onSave={() => handleSaveClick(selectedScope)} />
       </div>
     </div>
   );
@@ -292,7 +344,7 @@ const GroupDetails = () => {
             {editingScope === selectedScope ? (
               <>
                 <button onClick={() => setEditingScope(null)} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">Cancel</button>
-                <button onClick={() => setEditingScope(null)} className="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800">Save</button>
+                <button onClick={() => handleSaveClick(selectedScope)} className="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800">Save</button>
               </>
             ) : (
               <>
@@ -305,13 +357,16 @@ const GroupDetails = () => {
             )}
           </div>
         </div>
-        <PermissionTable scope={selectedScope} isEditable={editingScope === selectedScope} onEdit={() => setEditingScope(selectedScope)} onCancel={() => setEditingScope(null)} onSave={() => setEditingScope(null)} showHeader={false} />
+        <PermissionTable scope={selectedScope} isEditable={editingScope === selectedScope} onEdit={() => setEditingScope(selectedScope)} onCancel={() => setEditingScope(null)} onSave={() => handleSaveClick(selectedScope)} showHeader={false} />
       </div>
     </div>
   );
 
   return (
     <div className="flex-1 overflow-auto">
+      {/* Confirmation Dialog */}
+      {showConfirmDialog && <ConfirmationDialog />}
+
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="flex items-center gap-3">
