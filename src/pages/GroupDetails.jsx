@@ -9,7 +9,6 @@ const GroupDetails = () => {
   const [activeTab, setActiveTab] = useState('members');
   const [activeLayout, setActiveLayout] = useState('tabs');
   const [selectedScope, setSelectedScope] = useState('admin');
-  const [expandedScope, setExpandedScope] = useState('admin');
   const [editingScope, setEditingScope] = useState(null);
   const [openDropdown, setOpenDropdown] = useState(null);
 
@@ -223,44 +222,6 @@ const GroupDetails = () => {
     </div>
   );
 
-  const AccordionLayout = () => (
-    <div className="space-y-3">
-      <div className="bg-amber-50 border border-amber-200 rounded-xl px-6 py-4 flex gap-3">
-        <div className="w-5 h-5 rounded-full border-2 border-amber-400 flex items-center justify-center flex-shrink-0">
-          <span className="text-amber-500 text-xs font-bold">!</span>
-        </div>
-        <div className="text-sm text-gray-600">Expand each scope to view and configure its permissions. Click <strong>Edit</strong> to make changes.</div>
-      </div>
-      {Object.entries(scopeConfig).map(([scope, config]) => {
-        const isExpanded = expandedScope === scope;
-        const count = getPermissionCount(scope);
-        return (
-          <div key={scope} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-            <button onClick={() => setExpandedScope(isExpanded ? null : scope)} className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-lg">
-                  {scope === 'admin' && '👑'}{scope === 'moderator' && '⭐'}{scope === 'participant' && '👤'}
-                </div>
-                <div className="text-left">
-                  <div className="font-semibold text-gray-900">{config.label}</div>
-                  <div className="text-sm text-gray-500">{count.allowed} of {count.total} permissions allowed</div>
-                </div>
-              </div>
-              <svg className={`w-5 h-5 text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-            {isExpanded && (
-              <div className="border-t border-gray-200">
-                <PermissionTable scope={scope} isEditable={editingScope === scope} onEdit={() => setEditingScope(scope)} onCancel={() => setEditingScope(null)} onSave={() => setEditingScope(null)} />
-              </div>
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
-
   const SidebarLayout = () => (
     <div className="flex gap-6">
       <div className="w-56 flex-shrink-0">
@@ -467,7 +428,6 @@ const GroupDetails = () => {
               <span className="text-sm text-gray-500">Layout:</span>
               {[
                 { id: 'tabs', label: 'Tabs' },
-                { id: 'accordion', label: 'Accordion' },
                 { id: 'sidebar', label: 'Sidebar' },
                 { id: 'segmented', label: 'Segmented' },
               ].map(layout => (
@@ -482,7 +442,6 @@ const GroupDetails = () => {
             </div>
 
             {activeLayout === 'tabs' && <TabsLayout />}
-            {activeLayout === 'accordion' && <AccordionLayout />}
             {activeLayout === 'sidebar' && <SidebarLayout />}
             {activeLayout === 'segmented' && <SegmentedLayout />}
           </>
