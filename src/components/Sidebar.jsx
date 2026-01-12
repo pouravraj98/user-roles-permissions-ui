@@ -15,7 +15,7 @@ const navItems = [
     submenu: [
       { id: 'users', label: 'Users' },
       { id: 'groups', label: 'Groups' },
-      { id: 'user-roles', label: 'User Roles', isActive: true },
+      { id: 'user-roles', label: 'User Roles' },
     ]
   },
   { id: 'credentials', label: 'Credentials', icon: 'shield' },
@@ -124,13 +124,20 @@ const Icon = ({ name, className = "w-5 h-5" }) => {
   return icons[name] || null;
 };
 
-export default function Sidebar() {
+export default function Sidebar({ activePage = 'user-roles', onPageChange }) {
   const [openMenus, setOpenMenus] = useState(['users-groups']);
 
   const toggleMenu = (id) => {
     setOpenMenus(prev =>
       prev.includes(id) ? prev.filter(m => m !== id) : [...prev, id]
     );
+  };
+
+  const handleSubmenuClick = (e, subItemId) => {
+    e.preventDefault();
+    if (onPageChange) {
+      onPageChange(subItemId);
+    }
   };
 
   return (
@@ -169,7 +176,7 @@ export default function Sidebar() {
               <button
                 onClick={() => item.hasSubmenu && toggleMenu(item.id)}
                 className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
-                  item.submenu?.some(s => s.isActive)
+                  item.submenu?.some(s => s.id === activePage)
                     ? 'bg-gray-100 text-gray-900'
                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                 }`}
@@ -192,8 +199,9 @@ export default function Sidebar() {
                     <li key={subItem.id}>
                       <a
                         href="#"
+                        onClick={(e) => handleSubmenuClick(e, subItem.id)}
                         className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
-                          subItem.isActive
+                          activePage === subItem.id
                             ? 'bg-gray-900 text-white'
                             : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                         }`}
