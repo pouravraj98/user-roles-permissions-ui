@@ -1,6 +1,11 @@
 import { useState } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { sampleGroups } from './Groups';
 
-const GroupDetails = ({ group, onBack }) => {
+const GroupDetails = () => {
+  const { groupId } = useParams();
+  const navigate = useNavigate();
+  const group = sampleGroups.find(g => g.id === groupId);
   const [activeTab, setActiveTab] = useState('members');
   const [activeLayout, setActiveLayout] = useState('tabs');
   const [selectedScope, setSelectedScope] = useState('admin');
@@ -349,11 +354,11 @@ const GroupDetails = ({ group, onBack }) => {
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="flex items-center gap-3">
-          <button onClick={onBack} className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors">
+          <Link to="/groups" className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors">
             <svg className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-          </button>
+          </Link>
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white">
             {group?.icon || '👥'}
           </div>

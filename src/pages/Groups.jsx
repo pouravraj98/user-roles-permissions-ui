@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import GroupDetails from './GroupDetails';
+import { Link } from 'react-router-dom';
 
-const sampleGroups = [
+export const sampleGroups = [
   { id: 'cometchat-guid-1', name: 'Hiking Group', icon: '🥾', type: 'Private', memberCount: 5, description: 'Explore, connect, and chat with fellow outdoor enthusiasts', created: 'Dec 04, 2025' },
   { id: 'cometchat-guid-2', name: 'Book Club', icon: '📚', type: 'Public', memberCount: 12, description: 'Monthly book discussions and recommendations', created: 'Nov 15, 2025' },
   { id: 'cometchat-guid-3', name: 'Fitness Team', icon: '💪', type: 'Private', memberCount: 8, description: 'Stay motivated with workout buddies', created: 'Oct 20, 2025' },
@@ -10,17 +10,12 @@ const sampleGroups = [
 ];
 
 const Groups = () => {
-  const [selectedGroup, setSelectedGroup] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredGroups = sampleGroups.filter(group =>
     group.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     group.id.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  if (selectedGroup) {
-    return <GroupDetails group={selectedGroup} onBack={() => setSelectedGroup(null)} />;
-  }
 
   return (
     <div className="flex-1 overflow-auto">
@@ -63,10 +58,10 @@ const Groups = () => {
           </div>
           <div className="divide-y divide-gray-100">
             {filteredGroups.map((group) => (
-              <div
+              <Link
                 key={group.id}
-                className="px-6 py-4 grid grid-cols-12 gap-4 items-center hover:bg-gray-50/50 cursor-pointer"
-                onClick={() => setSelectedGroup(group)}
+                to={`/groups/${group.id}`}
+                className="px-6 py-4 grid grid-cols-12 gap-4 items-center hover:bg-gray-50/50 cursor-pointer block"
               >
                 <div className="col-span-4 flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-lg">
@@ -90,7 +85,7 @@ const Groups = () => {
                 <div className="col-span-2 text-sm text-gray-500">{group.created}</div>
                 <div className="col-span-2 flex items-center justify-end gap-2">
                   <button
-                    onClick={(e) => { e.stopPropagation(); setSelectedGroup(group); }}
+                    onClick={(e) => e.stopPropagation()}
                     className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                     title="Edit"
                   >
@@ -108,7 +103,7 @@ const Groups = () => {
                     </svg>
                   </button>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

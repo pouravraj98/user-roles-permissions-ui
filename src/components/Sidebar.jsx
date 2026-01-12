@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const navItems = [
   { id: 'overview', label: 'Overview', icon: 'grid' },
@@ -13,9 +14,9 @@ const navItems = [
     hasSubmenu: true,
     isOpen: true,
     submenu: [
-      { id: 'users', label: 'Users' },
-      { id: 'groups', label: 'Groups' },
-      { id: 'user-roles', label: 'User Roles' },
+      { id: 'users', label: 'Users', path: '/users' },
+      { id: 'groups', label: 'Groups', path: '/groups' },
+      { id: 'user-roles', label: 'User Roles', path: '/user-roles' },
     ]
   },
   { id: 'credentials', label: 'Credentials', icon: 'shield' },
@@ -124,20 +125,13 @@ const Icon = ({ name, className = "w-5 h-5" }) => {
   return icons[name] || null;
 };
 
-export default function Sidebar({ activePage = 'user-roles', onPageChange }) {
+export default function Sidebar({ activePage = 'user-roles' }) {
   const [openMenus, setOpenMenus] = useState(['users-groups']);
 
   const toggleMenu = (id) => {
     setOpenMenus(prev =>
       prev.includes(id) ? prev.filter(m => m !== id) : [...prev, id]
     );
-  };
-
-  const handleSubmenuClick = (e, subItemId) => {
-    e.preventDefault();
-    if (onPageChange) {
-      onPageChange(subItemId);
-    }
   };
 
   return (
@@ -197,9 +191,8 @@ export default function Sidebar({ activePage = 'user-roles', onPageChange }) {
                 <ul className="mt-1 ml-8 space-y-1">
                   {item.submenu.map((subItem) => (
                     <li key={subItem.id}>
-                      <a
-                        href="#"
-                        onClick={(e) => handleSubmenuClick(e, subItem.id)}
+                      <Link
+                        to={subItem.path}
                         className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
                           activePage === subItem.id
                             ? 'bg-gray-900 text-white'
@@ -207,7 +200,7 @@ export default function Sidebar({ activePage = 'user-roles', onPageChange }) {
                         }`}
                       >
                         {subItem.label}
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>
