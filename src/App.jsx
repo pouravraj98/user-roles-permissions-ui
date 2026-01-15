@@ -5,6 +5,7 @@ import PageHeader from './components/PageHeader'
 import PermissionsTable from './components/PermissionsTable'
 import Groups from './pages/Groups'
 import GroupDetails from './pages/GroupDetails'
+import NotificationSettings from './pages/NotificationSettings'
 
 function Layout({ children, activePage }) {
   return (
@@ -71,6 +72,44 @@ function GroupDetailsPage() {
   )
 }
 
+function NotificationSettingsPage() {
+  return (
+    <Layout activePage="notifications-settings">
+      <NotificationSettings />
+    </Layout>
+  )
+}
+
+function NotificationGetStartedPage() {
+  return (
+    <Layout activePage="notifications-get-started">
+      <div className="flex-1 overflow-auto">
+        <div className="bg-white border-b border-gray-200 px-6 py-4">
+          <h1 className="text-lg font-semibold text-gray-900">Get Started / Integrate</h1>
+        </div>
+        <div className="p-6">
+          <p className="text-gray-500">Integration guides and getting started documentation will be displayed here.</p>
+        </div>
+      </div>
+    </Layout>
+  )
+}
+
+function NotificationLogsPage() {
+  return (
+    <Layout activePage="notifications-logs">
+      <div className="flex-1 overflow-auto">
+        <div className="bg-white border-b border-gray-200 px-6 py-4">
+          <h1 className="text-lg font-semibold text-gray-900">Logs</h1>
+        </div>
+        <div className="p-6">
+          <p className="text-gray-500">Notification logs will be displayed here.</p>
+        </div>
+      </div>
+    </Layout>
+  )
+}
+
 function App() {
   return (
     <HashRouter>
@@ -80,6 +119,9 @@ function App() {
         <Route path="/users" element={<UsersPage />} />
         <Route path="/groups" element={<GroupsPage />} />
         <Route path="/groups/:groupId" element={<GroupDetailsPage />} />
+        <Route path="/notifications/settings" element={<NotificationSettingsPage />} />
+        <Route path="/notifications/get-started" element={<NotificationGetStartedPage />} />
+        <Route path="/notifications/logs" element={<NotificationLogsPage />} />
       </Routes>
     </HashRouter>
   )

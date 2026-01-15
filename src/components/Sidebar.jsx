@@ -32,7 +32,17 @@ const navStructure = {
     label: 'FEATURES',
     items: [
       { id: 'moderation', label: 'Moderation', icon: 'moderation', hasSubmenu: true },
-      { id: 'notifications', label: 'Notifications', icon: 'bell' },
+      {
+        id: 'notifications',
+        label: 'Notifications',
+        icon: 'bell',
+        hasSubmenu: true,
+        submenu: [
+          { id: 'notifications-get-started', label: 'Get Started / Integrate', path: '/notifications/get-started' },
+          { id: 'notifications-logs', label: 'Logs', path: '/notifications/logs' },
+          { id: 'notifications-settings', label: 'Settings', path: '/notifications/settings' },
+        ]
+      },
       { id: 'insights', label: 'Insights', icon: 'chart' },
     ]
   },
