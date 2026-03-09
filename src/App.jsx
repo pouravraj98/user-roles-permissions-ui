@@ -6,6 +6,7 @@ import PermissionsTable from './components/PermissionsTable'
 import Groups from './pages/Groups'
 import GroupDetails from './pages/GroupDetails'
 import NotificationSettings from './pages/NotificationSettings'
+import ChatSettings from './pages/ChatSettings'
 
 function Layout({ children, activePage }) {
   return (
@@ -72,6 +73,14 @@ function GroupDetailsPage() {
   )
 }
 
+function ChatSettingsPage() {
+  return (
+    <Layout activePage="chats-settings">
+      <ChatSettings />
+    </Layout>
+  )
+}
+
 function NotificationSettingsPage() {
   return (
     <Layout activePage="notifications-settings">
@@ -119,6 +128,7 @@ function App() {
         <Route path="/users" element={<UsersPage />} />
         <Route path="/groups" element={<GroupsPage />} />
         <Route path="/groups/:groupId" element={<GroupDetailsPage />} />
+        <Route path="/chats/settings" element={<ChatSettingsPage />} />
         <Route path="/notifications/settings" element={<NotificationSettingsPage />} />
         <Route path="/notifications/get-started" element={<NotificationGetStartedPage />} />
         <Route path="/notifications/logs" element={<NotificationLogsPage />} />

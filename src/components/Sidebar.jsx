@@ -22,7 +22,21 @@ const navStructure = {
   products: {
     label: 'PRODUCTS',
     items: [
-      { id: 'chats', label: 'Chats', icon: 'chat', hasSubmenu: true },
+      {
+        id: 'chats',
+        label: 'Chat & Messaging',
+        icon: 'chat',
+        hasSubmenu: true,
+        submenu: [
+          { id: 'chats-get-started', label: 'Get Started / Integrate', path: '/chats/get-started' },
+          { id: 'chats-logs', label: 'Logs', path: '/chats/logs' },
+          { id: 'chats-features', label: 'Features', path: '/chats/features' },
+          { id: 'chats-moderation', label: 'Moderation', path: '/chats/moderation', external: true },
+          { id: 'chats-analytics', label: 'Analytics & Insights', path: '/chats/analytics', external: true },
+          { id: 'chats-settings', label: 'Settings', path: '/chats/settings' },
+          { id: 'chats-widgets', label: 'Widgets (Legacy)', path: '/chats/widgets' },
+        ]
+      },
       { id: 'voice-video', label: 'Voice & Video', icon: 'phone', hasSubmenu: true },
       { id: 'ai-agents', label: 'AI Agents', icon: 'ai', hasSubmenu: true },
       { id: 'byo-agents', label: 'BYO Agents', icon: 'byo', hasSubmenu: true },
@@ -152,7 +166,13 @@ const Icon = ({ name, className = "w-5 h-5" }) => {
 };
 
 export default function Sidebar({ activePage = 'user-roles' }) {
-  const [openMenus, setOpenMenus] = useState(['users-groups']);
+  const [openMenus, setOpenMenus] = useState(() => {
+    const menus = ['users-groups'];
+    // Auto-open the chats menu if a chats submenu item is active
+    if (activePage?.startsWith('chats')) menus.push('chats');
+    if (activePage?.startsWith('notifications')) menus.push('notifications');
+    return menus;
+  });
 
   const toggleMenu = (id) => {
     setOpenMenus(prev =>
@@ -192,13 +212,18 @@ export default function Sidebar({ activePage = 'user-roles' }) {
               <li key={subItem.id}>
                 <Link
                   to={subItem.path}
-                  className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
+                  className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
                     activePage === subItem.id
                       ? 'bg-gray-900 text-white'
                       : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                   }`}
                 >
-                  {subItem.label}
+                  <span>{subItem.label}</span>
+                  {subItem.external && (
+                    <svg className="w-3.5 h-3.5 opacity-50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" />
+                    </svg>
+                  )}
                 </Link>
               </li>
             ))}
