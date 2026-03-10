@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 const agentsData = [
   {
@@ -73,6 +73,28 @@ const agentsData = [
   },
 ];
 
+const platforms = [
+  { id: 'langgraph', label: 'LangGraph', icon: '🔗', bg: 'bg-green-50', text: 'text-green-700' },
+  { id: 'crewai', label: 'crewai', icon: '©', bg: 'bg-gray-50', text: 'text-gray-700' },
+  { id: 'vercelai', label: 'Vercel AI', icon: '▲', bg: 'bg-gray-50', text: 'text-gray-700' },
+  { id: 'ag2', label: 'AG2', icon: '⚡', bg: 'bg-gray-50', text: 'text-gray-700' },
+  { id: 'rasa', label: 'Rasa', icon: '🤖', bg: 'bg-gray-50', text: 'text-gray-700' },
+  { id: 'mastra', label: 'Mastra', icon: '✦', bg: 'bg-gray-50', text: 'text-gray-700' },
+  { id: 'agno', label: 'Agno', icon: 'A', bg: 'bg-red-50', text: 'text-red-700' },
+  { id: 'ag-ui', label: 'AG-UI', icon: '◇', bg: 'bg-gray-50', text: 'text-gray-700' },
+  { id: 'mastra-legacy', label: 'Mastra (Legacy)', icon: '✦', bg: 'bg-gray-50', text: 'text-gray-700' },
+  { id: 'http', label: 'Http', icon: '⟨⟩', bg: 'bg-gray-50', text: 'text-gray-700', badge: 'Beta' },
+  { id: 'http-agent', label: 'Http Agent', icon: '⟨⟩', bg: 'bg-gray-50', text: 'text-gray-700', badge: 'Beta' },
+];
+
+const InfoIcon = ({ className = "w-3.5 h-3.5" }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="10" />
+    <line x1="12" y1="16" x2="12" y2="12" />
+    <line x1="12" y1="8" x2="12.01" y2="8" />
+  </svg>
+);
+
 const Toggle = ({ enabled, onChange }) => (
   <button
     onClick={(e) => { e.stopPropagation(); onChange(!enabled); }}
@@ -97,9 +119,257 @@ const CopyIcon = () => (
   </button>
 );
 
+// Connect Agent Form
+function ConnectAgentForm({ agent, onBack }) {
+  const [selectedPlatform, setSelectedPlatform] = useState(agent ? 'mastra-legacy' : 'langgraph');
+  const [name, setName] = useState(agent?.name || 'Customer Support Agent');
+  const [iconUrl, setIconUrl] = useState('https://assets.cometchat.io/ai-agents/default-agent-profile-picture.png');
+  const [greeting, setGreeting] = useState('');
+  const [introMessage, setIntroMessage] = useState('');
+  const [suggestedMessages, setSuggestedMessages] = useState([]);
+  const [deploymentUrl, setDeploymentUrl] = useState(agent?.deploymentUrl || '');
+  const [headers, setHeaders] = useState('{\n  "authorization": "Basic your_basic_auth"\n}');
+  const [actionsOpen, setActionsOpen] = useState(false);
+  const [toolsOpen, setToolsOpen] = useState(false);
+  const scrollRef = useRef(null);
+
+  const addSuggestedMessage = () => {
+    setSuggestedMessages(prev => [...prev, '']);
+  };
+
+  const updateSuggestedMessage = (index, value) => {
+    setSuggestedMessages(prev => prev.map((m, i) => i === index ? value : m));
+  };
+
+  const removeSuggestedMessage = (index) => {
+    setSuggestedMessages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  return (
+    <div className="flex-1 overflow-auto">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200 px-8 py-5 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <button onClick={onBack} className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors">
+            <svg className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h1 className="text-xl font-semibold text-gray-900">Connect Agent</h1>
+        </div>
+        <button className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
+          Documentation
+        </button>
+      </div>
+
+      <div className="px-8 py-8 max-w-4xl">
+        {/* Platform Selector */}
+        <div className="mb-8 relative" ref={scrollRef}>
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+            {platforms.map(p => (
+              <button
+                key={p.id}
+                onClick={() => setSelectedPlatform(p.id)}
+                className={`flex flex-col items-center gap-2 px-4 py-3 rounded-xl border-2 transition-all flex-shrink-0 min-w-[80px] relative ${
+                  selectedPlatform === p.id
+                    ? 'border-purple-500 bg-purple-50'
+                    : 'border-gray-200 bg-white hover:border-gray-300'
+                }`}
+              >
+                {p.badge && (
+                  <span className="absolute -top-2 -right-2 text-[10px] font-medium bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded">
+                    {p.badge}
+                  </span>
+                )}
+                <div className={`w-10 h-10 rounded-lg ${p.bg} flex items-center justify-center ${p.text} text-lg font-bold`}>
+                  {p.icon}
+                </div>
+                <span className="text-xs font-medium text-gray-700 whitespace-nowrap">{p.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Form */}
+        <div className="space-y-6">
+          {/* Name */}
+          <div>
+            <label className="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1.5">
+              Name
+              <InfoIcon className="w-3.5 h-3.5 text-gray-400" />
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+            />
+          </div>
+
+          {/* Icon */}
+          <div>
+            <label className="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1.5">
+              Icon
+              <InfoIcon className="w-3.5 h-3.5 text-gray-400" />
+            </label>
+            <input
+              type="text"
+              value={iconUrl}
+              onChange={(e) => setIconUrl(e.target.value)}
+              className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400"
+            />
+          </div>
+
+          {/* Connect Actions */}
+          <div className="border border-gray-200 rounded-lg">
+            <button
+              onClick={() => setActionsOpen(!actionsOpen)}
+              className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-gray-900 hover:bg-gray-50 transition-colors"
+            >
+              <svg className={`w-4 h-4 text-gray-500 transition-transform ${actionsOpen ? 'rotate-90' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+              Connect Actions
+            </button>
+            {actionsOpen && (
+              <div className="px-4 pb-4 border-t border-gray-100 pt-3">
+                <p className="text-sm text-gray-500">Configure actions for this agent.</p>
+              </div>
+            )}
+          </div>
+
+          {/* Connect Tools */}
+          <div className="border border-gray-200 rounded-lg">
+            <button
+              onClick={() => setToolsOpen(!toolsOpen)}
+              className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-gray-900 hover:bg-gray-50 transition-colors"
+            >
+              <svg className={`w-4 h-4 text-gray-500 transition-transform ${toolsOpen ? 'rotate-90' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+              Connect Tools
+            </button>
+            {toolsOpen && (
+              <div className="px-4 pb-4 border-t border-gray-100 pt-3">
+                <p className="text-sm text-gray-500">Configure tools for this agent.</p>
+              </div>
+            )}
+          </div>
+
+          {/* Greeting */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">Greeting</label>
+            <input
+              type="text"
+              value={greeting}
+              onChange={(e) => setGreeting(e.target.value)}
+              placeholder="Greeting"
+              className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 placeholder:text-gray-400"
+            />
+          </div>
+
+          {/* Introductory Message */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">Introductory Message</label>
+            <input
+              type="text"
+              value={introMessage}
+              onChange={(e) => setIntroMessage(e.target.value)}
+              placeholder="Introductory Message"
+              className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 placeholder:text-gray-400"
+            />
+          </div>
+
+          {/* Suggested Messages */}
+          <div>
+            <label className="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-2">
+              Suggested messages
+              <InfoIcon className="w-3.5 h-3.5 text-gray-400" />
+            </label>
+            {suggestedMessages.map((msg, i) => (
+              <div key={i} className="flex items-center gap-2 mb-2">
+                <input
+                  type="text"
+                  value={msg}
+                  onChange={(e) => updateSuggestedMessage(i, e.target.value)}
+                  placeholder="Enter suggested message"
+                  className="flex-1 px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 placeholder:text-gray-400"
+                />
+                <button
+                  onClick={() => removeSuggestedMessage(i)}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+            ))}
+            <button
+              onClick={addSuggestedMessage}
+              className="flex items-center gap-1.5 text-sm font-medium text-purple-600 hover:text-purple-700"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path d="M12 4v16m8-8H4" />
+              </svg>
+              Add Suggested messages
+            </button>
+          </div>
+
+          {/* Deployment URL */}
+          <div>
+            <label className="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1.5">
+              Deployment URL
+              <InfoIcon className="w-3.5 h-3.5 text-gray-400" />
+            </label>
+            <input
+              type="text"
+              value={deploymentUrl}
+              onChange={(e) => setDeploymentUrl(e.target.value)}
+              placeholder="Deployment URL"
+              className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 placeholder:text-gray-400"
+            />
+          </div>
+
+          {/* Headers */}
+          <div>
+            <label className="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1.5">
+              Headers (Each header(key:value) on a new line). Should be a valid JSON
+              <InfoIcon className="w-3.5 h-3.5 text-gray-400" />
+            </label>
+            <textarea
+              value={headers}
+              onChange={(e) => setHeaders(e.target.value)}
+              rows={6}
+              className="w-full px-4 py-3 text-sm font-mono border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 resize-y"
+            />
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center gap-3 pt-2 pb-4">
+            <button
+              onClick={onBack}
+              className="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button className="px-5 py-2.5 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700">
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Main BYO Agents component
 export default function BYOAgents() {
   const [agents, setAgents] = useState(agentsData);
   const [activeTab, setActiveTab] = useState('agents');
+  const [view, setView] = useState('list'); // 'list' | 'form'
+  const [editingAgent, setEditingAgent] = useState(null);
 
   const toggleAgent = (id) => {
     setAgents(prev =>
@@ -107,11 +377,30 @@ export default function BYOAgents() {
     );
   };
 
+  const handleAddAgent = () => {
+    setEditingAgent(null);
+    setView('form');
+  };
+
+  const handleEditAgent = (agent) => {
+    setEditingAgent(agent);
+    setView('form');
+  };
+
+  const handleBack = () => {
+    setView('list');
+    setEditingAgent(null);
+  };
+
   const tabs = [
     { id: 'agents', label: 'Agents' },
     { id: 'actions', label: 'Actions' },
     { id: 'tools', label: 'Tools' },
   ];
+
+  if (view === 'form') {
+    return <ConnectAgentForm agent={editingAgent} onBack={handleBack} />;
+  }
 
   return (
     <div className="flex-1 overflow-auto">
@@ -127,7 +416,10 @@ export default function BYOAgents() {
               <button className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
                 Documentation
               </button>
-              <button className="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 flex items-center gap-2">
+              <button
+                onClick={handleAddAgent}
+                className="px-4 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 flex items-center gap-2"
+              >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
@@ -197,7 +489,10 @@ export default function BYOAgents() {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                       </svg>
                     </button>
-                    <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                    <button
+                      onClick={() => handleEditAgent(agent)}
+                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                    >
                       <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                       </svg>
