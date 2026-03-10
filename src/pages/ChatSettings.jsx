@@ -234,7 +234,7 @@ export default function ChatSettings() {
                 <div className="flex-1">
                   <div className="text-sm font-semibold text-gray-900">Auto-decrement reply count on deletion</div>
                   <p className="text-sm text-gray-500 mt-0.5">
-                    When a threaded reply is deleted, automatically reduce the parent message's reply count. The count will never go below zero.
+                    When a threaded reply is deleted, automatically reduce the parent message's reply count.
                   </p>
                 </div>
               </div>
