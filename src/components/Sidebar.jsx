@@ -38,7 +38,16 @@ const navStructure = {
         ]
       },
       { id: 'voice-video', label: 'Voice & Video', icon: 'phone', hasSubmenu: true },
-      { id: 'ai-agents', label: 'AI Agents', icon: 'ai', hasSubmenu: true },
+      {
+        id: 'ai-agents',
+        label: 'AI Agents',
+        icon: 'ai',
+        hasSubmenu: true,
+        submenu: [
+          { id: 'ai-agents-get-started', label: 'Get Started / Integrate', path: '/ai-agents/get-started' },
+          { id: 'ai-agents-list', label: 'AI Agents', path: '/ai-agents' },
+        ]
+      },
       { id: 'byo-agents', label: 'BYO Agents', icon: 'byo', hasSubmenu: true },
     ]
   },
@@ -170,6 +179,7 @@ export default function Sidebar({ activePage = 'user-roles' }) {
     const menus = ['users-groups'];
     // Auto-open the chats menu if a chats submenu item is active
     if (activePage?.startsWith('chats')) menus.push('chats');
+    if (activePage?.startsWith('ai-agents')) menus.push('ai-agents');
     if (activePage?.startsWith('notifications')) menus.push('notifications');
     return menus;
   });

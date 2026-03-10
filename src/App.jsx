@@ -7,6 +7,7 @@ import Groups from './pages/Groups'
 import GroupDetails from './pages/GroupDetails'
 import NotificationSettings from './pages/NotificationSettings'
 import ChatSettings from './pages/ChatSettings'
+import AIAgents from './pages/AIAgents'
 
 function Layout({ children, activePage }) {
   return (
@@ -73,6 +74,14 @@ function GroupDetailsPage() {
   )
 }
 
+function AIAgentsPage() {
+  return (
+    <Layout activePage="ai-agents-list">
+      <AIAgents />
+    </Layout>
+  )
+}
+
 function ChatSettingsPage() {
   return (
     <Layout activePage="chats-settings">
@@ -128,6 +137,7 @@ function App() {
         <Route path="/users" element={<UsersPage />} />
         <Route path="/groups" element={<GroupsPage />} />
         <Route path="/groups/:groupId" element={<GroupDetailsPage />} />
+        <Route path="/ai-agents" element={<AIAgentsPage />} />
         <Route path="/chats/settings" element={<ChatSettingsPage />} />
         <Route path="/notifications/settings" element={<NotificationSettingsPage />} />
         <Route path="/notifications/get-started" element={<NotificationGetStartedPage />} />
