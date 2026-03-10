@@ -162,8 +162,8 @@ function ConnectAgentForm({ agent, onBack }) {
         </button>
       </div>
 
-      <div className="px-8 py-8 max-w-4xl">
-        {/* Platform Selector */}
+      <div className="px-8 py-8">
+        {/* Platform Selector - full width */}
         <div className="mb-8 relative" ref={scrollRef}>
           <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
             {platforms.map(p => (
@@ -190,8 +190,8 @@ function ConnectAgentForm({ agent, onBack }) {
           </div>
         </div>
 
-        {/* Form */}
-        <div className="space-y-6">
+        {/* Form - constrained width, left-aligned */}
+        <div className="max-w-2xl space-y-6">
           {/* Name */}
           <div>
             <label className="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1.5">
