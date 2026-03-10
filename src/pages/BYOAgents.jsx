@@ -131,6 +131,10 @@ function ConnectAgentForm({ agent, onBack }) {
   const [headers, setHeaders] = useState('{\n  "authorization": "Basic your_basic_auth"\n}');
   const [actionsOpen, setActionsOpen] = useState(false);
   const [toolsOpen, setToolsOpen] = useState(false);
+  const [groupMode, setGroupMode] = useState('active');
+  const [mentionTrigger, setMentionTrigger] = useState(true);
+  const [keywords, setKeywords] = useState([]);
+  const [keywordInput, setKeywordInput] = useState('');
   const scrollRef = useRef(null);
 
   const addSuggestedMessage = () => {
@@ -254,6 +258,155 @@ function ConnectAgentForm({ agent, onBack }) {
                 <p className="text-sm text-gray-500">Configure tools for this agent.</p>
               </div>
             )}
+          </div>
+
+          {/* Group Interaction Mode */}
+          <div>
+            <label className="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-3">
+              Group Interaction Mode
+              <InfoIcon className="w-3.5 h-3.5 text-gray-400" />
+            </label>
+            <div className="space-y-3">
+              <label
+                className={`flex items-start gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                  groupMode === 'active'
+                    ? 'border-purple-500 bg-purple-50/50'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="groupMode"
+                  value="active"
+                  checked={groupMode === 'active'}
+                  onChange={() => setGroupMode('active')}
+                  className="mt-0.5 accent-purple-600"
+                />
+                <div>
+                  <div className="text-sm font-medium text-gray-900">Active</div>
+                  <p className="text-xs text-gray-500 mt-0.5">Agent will respond to all messages in groups it belongs to. You control cost and responsiveness.</p>
+                </div>
+              </label>
+              <label
+                className={`flex items-start gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                  groupMode === 'invoke'
+                    ? 'border-purple-500 bg-purple-50/50'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="groupMode"
+                  value="invoke"
+                  checked={groupMode === 'invoke'}
+                  onChange={() => setGroupMode('invoke')}
+                  className="mt-0.5 accent-purple-600"
+                />
+                <div>
+                  <div className="text-sm font-medium text-gray-900">Invoke</div>
+                  <p className="text-xs text-gray-500 mt-0.5">Agent responds only when @mentioned or triggered by a configured keyword.</p>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          {/* Triggers - only shown in Invoke mode */}
+          {groupMode === 'invoke' && (
+            <div className="bg-gray-50 rounded-lg border border-gray-200 p-5 space-y-4">
+              <div className="text-sm font-medium text-gray-900">Triggers</div>
+
+              {/* @mention trigger */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-sm text-gray-700">@mention</div>
+                  <p className="text-xs text-gray-500 mt-0.5">Agent responds when @mentioned in a group message</p>
+                </div>
+                <button
+                  onClick={() => setMentionTrigger(!mentionTrigger)}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    mentionTrigger ? 'bg-purple-500' : 'bg-gray-300'
+                  }`}
+                >
+                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    mentionTrigger ? 'translate-x-6' : 'translate-x-1'
+                  }`} />
+                </button>
+              </div>
+
+              <div className="border-t border-gray-200" />
+
+              {/* Keywords */}
+              <div>
+                <div className="text-sm text-gray-700 mb-2">Keywords</div>
+                <p className="text-xs text-gray-500 mb-3">Agent responds when any of these keywords appear in a group message</p>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {keywords.map((kw, i) => (
+                    <span key={i} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-white text-gray-700 border border-gray-200">
+                      {kw}
+                      <button
+                        onClick={() => setKeywords(prev => prev.filter((_, idx) => idx !== i))}
+                        className="hover:bg-gray-100 rounded-full"
+                      >
+                        <svg className="w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                      </button>
+                    </span>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={keywordInput}
+                    onChange={(e) => setKeywordInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && keywordInput.trim()) {
+                        setKeywords(prev => [...prev, keywordInput.trim()]);
+                        setKeywordInput('');
+                      }
+                    }}
+                    placeholder="Type a keyword and press Enter"
+                    className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 placeholder:text-gray-400 bg-white"
+                  />
+                  <button
+                    onClick={() => {
+                      if (keywordInput.trim()) {
+                        setKeywords(prev => [...prev, keywordInput.trim()]);
+                        setKeywordInput('');
+                      }
+                    }}
+                    className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Human Handoff - info section */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-5">
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                <svg className="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-sm font-semibold text-gray-900">Human Handoff</div>
+                <p className="text-sm text-gray-600 mt-1">
+                  This agent can escalate group conversations to a human. Configure handoff behavior in your agent's logic — CometChat provides the mechanism, your agent controls the decision.
+                </p>
+                <a href="#" className="inline-flex items-center gap-1 text-sm font-medium text-purple-600 hover:text-purple-700 mt-2">
+                  Learn how to set up handoff
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </a>
+              </div>
+            </div>
           </div>
 
           {/* Greeting */}
