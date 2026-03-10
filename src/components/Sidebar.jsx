@@ -48,7 +48,17 @@ const navStructure = {
           { id: 'ai-agents-list', label: 'AI Agents', path: '/ai-agents' },
         ]
       },
-      { id: 'byo-agents', label: 'BYO Agents', icon: 'byo', hasSubmenu: true },
+      {
+        id: 'byo-agents',
+        label: 'BYO Agents',
+        icon: 'byo',
+        hasSubmenu: true,
+        submenu: [
+          { id: 'byo-agents-get-started', label: 'Get Started / Integrate', path: '/byo-agents/get-started' },
+          { id: 'byo-agents-list', label: 'BYO Agents', path: '/byo-agents' },
+          { id: 'byo-agents-custom-bots', label: 'Custom Bots', path: '/byo-agents/custom-bots' },
+        ]
+      },
     ]
   },
   features: {
@@ -180,6 +190,7 @@ export default function Sidebar({ activePage = 'user-roles' }) {
     // Auto-open the chats menu if a chats submenu item is active
     if (activePage?.startsWith('chats')) menus.push('chats');
     if (activePage?.startsWith('ai-agents')) menus.push('ai-agents');
+    if (activePage?.startsWith('byo-agents')) menus.push('byo-agents');
     if (activePage?.startsWith('notifications')) menus.push('notifications');
     return menus;
   });
