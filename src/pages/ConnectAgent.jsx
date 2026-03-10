@@ -203,7 +203,7 @@ export default function ConnectAgent() {
                 />
                 <div>
                   <div className="text-sm font-medium text-gray-900">Active</div>
-                  <p className="text-xs text-gray-500 mt-0.5">Agent will respond to all messages in groups it belongs to. You control cost and responsiveness.</p>
+                  <p className="text-xs text-gray-500 mt-0.5">Agent will respond to all messages in groups it belongs to.</p>
                 </div>
               </label>
               <label
