@@ -30,6 +30,7 @@ const navStructure = {
         submenu: [
           { id: 'chats-get-started', label: 'Get Started / Integrate', path: '/chats/get-started' },
           { id: 'chats-logs', label: 'Logs', path: '/chats/logs' },
+          { id: 'chats-conversation-explorer', label: 'Conversation Explorer', path: '/chats/conversation-explorer' },
           { id: 'chats-features', label: 'Features', path: '/chats/features' },
           { id: 'chats-moderation', label: 'Moderation', path: '/chats/moderation', external: true },
           { id: 'chats-analytics', label: 'Analytics & Insights', path: '/chats/analytics', external: true },

@@ -7,6 +7,7 @@ import Groups from './pages/Groups'
 import GroupDetails from './pages/GroupDetails'
 import NotificationSettings from './pages/NotificationSettings'
 import ChatSettings from './pages/ChatSettings'
+import ConversationExplorer from './pages/ConversationExplorer'
 import AIAgents from './pages/AIAgents'
 import BYOAgents from './pages/BYOAgents'
 import ConnectAgent from './pages/ConnectAgent'
@@ -116,6 +117,14 @@ function ChatSettingsPage() {
   )
 }
 
+function ConversationExplorerPage() {
+  return (
+    <Layout activePage="chats-conversation-explorer">
+      <ConversationExplorer />
+    </Layout>
+  )
+}
+
 function NotificationSettingsPage() {
   return (
     <Layout activePage="notifications-settings">
@@ -167,6 +176,7 @@ function App() {
         <Route path="/byo-agents" element={<BYOAgentsPage />} />
         <Route path="/byo-agents/add" element={<ConnectAgentAddPage />} />
         <Route path="/byo-agents/:agentId/edit" element={<ConnectAgentEditPage />} />
+        <Route path="/chats/conversation-explorer" element={<ConversationExplorerPage />} />
         <Route path="/chats/settings" element={<ChatSettingsPage />} />
         <Route path="/notifications/settings" element={<NotificationSettingsPage />} />
         <Route path="/notifications/get-started" element={<NotificationGetStartedPage />} />
