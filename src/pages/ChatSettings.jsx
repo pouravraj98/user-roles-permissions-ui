@@ -54,7 +54,7 @@ const Tooltip = ({ children, content }) => {
 export default function ChatSettings() {
   const [chatLogs, setChatLogs] = useState(true);
   const [mediaAccessSecurity, setMediaAccessSecurity] = useState('basic');
-  const [tokenTTL, setTokenTTL] = useState('3600');
+  const [tokenTTL, setTokenTTL] = useState('86400');
 
   const [customMessages, setCustomMessages] = useState(true);
   const [groupActions, setGroupActions] = useState(true);
@@ -103,40 +103,38 @@ export default function ChatSettings() {
                 <div className="flex items-start gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-1.5 mb-0.5">
-                      <span className="text-sm font-semibold text-gray-900">Media Access Security</span>
+                      <span className="text-sm font-semibold text-gray-900">Media URL Signing</span>
                       <Tooltip content={
                         <div className="space-y-2">
-                          <p className="font-semibold text-white/90">Media Access Security levels:</p>
-                          <p><span className="font-medium text-white">Basic</span> — Media files are accessible via permanent public URLs. No token required.</p>
-                          <p><span className="font-medium text-white">Long lived token</span> — Media URLs require a token and remain valid for an extended period (e.g. 24 hours). Best for offline access or caching.</p>
-                          <p><span className="font-medium text-white">Short lived token</span> — Media URLs expire quickly (minutes to 1 hour). Most secure option, requires SDK with retry support for expired URLs.</p>
+                          <p className="font-semibold text-white/90">Media URL Signing levels:</p>
+                          <p><span className="font-medium text-white">Public URLs</span> — Media files are accessible via direct, unrestricted URLs. No authentication required.</p>
+                          <p><span className="font-medium text-white">Token-based Signed URLs</span> — Media URLs include an access token generated using the authToken or apiKey. URLs expire when the associated authToken or apiKey is deleted.</p>
+                          <p><span className="font-medium text-white">Presigned URLs</span> — Media URLs are time-limited with a configurable TTL. Requires SDK v5.x+ with retry support.</p>
                         </div>
                       }>
                         <InfoIcon className="w-3.5 h-3.5 text-gray-400 cursor-help" />
                       </Tooltip>
                     </div>
-                    <p className="text-sm text-gray-500">Control how media files (images, videos, audio, documents) are accessed by recipients.</p>
+                    <p className="text-sm text-gray-500">Control how media file URLs are secured and accessed.</p>
                   </div>
                   <select
                     value={mediaAccessSecurity}
                     onChange={(e) => setMediaAccessSecurity(e.target.value)}
-                    className="w-48 px-4 py-2.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 cursor-pointer flex-shrink-0"
+                    className="w-64 px-4 py-2.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 cursor-pointer flex-shrink-0"
                   >
-                    <option value="basic">Basic</option>
-                    <option value="long-lived-token">Long lived token</option>
-                    <option value="short-lived-token">Short lived token</option>
+                    <option value="basic">Public URLs</option>
+                    <option value="long-lived-token">Token-based Signed URLs</option>
+                    <option value="short-lived-token">Presigned URLs</option>
                   </select>
                 </div>
 
-                {/* TTL Config — only for token-based options */}
-                {mediaAccessSecurity !== 'basic' && (
+                {/* TTL Config — only for presigned URLs */}
+                {mediaAccessSecurity === 'short-lived-token' && (
                   <div className="flex items-start gap-4">
                     <div className="flex-1">
                       <div className="text-sm font-semibold text-gray-900 mb-0.5">Token TTL</div>
                       <p className="text-sm text-gray-500">
-                        {mediaAccessSecurity === 'long-lived-token'
-                          ? 'Recommended: 86400 (24 hours) or higher.'
-                          : 'Recommended: 600–3600 (10 min – 1 hour). URLs expire after this duration.'}
+                        Recommended: 86400 (1 day). URLs expire after this duration.
                       </p>
                     </div>
                     <div className="flex-shrink-0">
@@ -145,7 +143,7 @@ export default function ChatSettings() {
                           type="number"
                           value={tokenTTL}
                           onChange={(e) => setTokenTTL(e.target.value)}
-                          placeholder="e.g. 3600"
+                          placeholder="e.g. 86400"
                           min="60"
                           className="w-48 px-4 py-2.5 pr-16 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 placeholder:text-gray-400"
                         />
@@ -155,14 +153,14 @@ export default function ChatSettings() {
                   </div>
                 )}
 
-                {/* SDK Warning Banner */}
-                {mediaAccessSecurity !== 'basic' && (
+                {/* SDK Warning Banner — only for Presigned URLs */}
+                {mediaAccessSecurity === 'short-lived-token' && (
                   <div className="flex gap-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
                     <svg className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
                     </svg>
                     <p className="text-xs text-amber-700 leading-relaxed">
-                      <span className="font-medium text-amber-800">Minimum SDK version required.</span> Token-based media access uses presigned URLs that expire after the configured TTL. Ensure your app uses a CometChat SDK version that supports automatic retry and URL refresh.
+                      <span className="font-medium text-amber-800">Minimum SDK version required: v5.x+</span> Presigned URLs expire after the configured TTL. Ensure your app uses CometChat SDK v5.0 or above which supports automatic retry and URL refresh.
                     </p>
                   </div>
                 )}
