@@ -36,9 +36,25 @@ const CrossIcon = () => (
   </svg>
 );
 
+const Tooltip = ({ children, content }) => {
+  const [show, setShow] = useState(false);
+  return (
+    <span className="relative inline-flex" onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
+      {children}
+      {show && (
+        <div className="absolute z-50 top-1/2 -translate-y-1/2 left-full ml-2.5 w-72 p-3 bg-gray-900 text-white text-xs leading-relaxed rounded-lg shadow-lg">
+          {content}
+          <div className="absolute top-1/2 -translate-y-1/2 right-full -mr-px border-4 border-transparent border-r-gray-900" />
+        </div>
+      )}
+    </span>
+  );
+};
+
 export default function ChatSettings() {
   const [chatLogs, setChatLogs] = useState(true);
-  const [tokenFileAccess, setTokenFileAccess] = useState(false);
+  const [mediaAccessSecurity, setMediaAccessSecurity] = useState('basic');
+  const [tokenTTL, setTokenTTL] = useState('3600');
 
   const [customMessages, setCustomMessages] = useState(true);
   const [groupActions, setGroupActions] = useState(true);
@@ -82,16 +98,71 @@ export default function ChatSettings() {
                 </div>
               </div>
               <div className="border-t border-gray-100" />
-              {/* Token Based File Access */}
-              <div className="flex items-start gap-4 px-6 py-5">
-                <Toggle enabled={tokenFileAccess} onChange={setTokenFileAccess} />
+              {/* Media Access Security */}
+              <div className="px-6 py-5 space-y-4">
                 <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-sm font-semibold text-gray-900">Token Based File Access</span>
-                    <InfoIcon className="w-3.5 h-3.5 text-gray-400" />
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <span className="text-sm font-semibold text-gray-900">Media Access Security</span>
+                    <Tooltip content={
+                      <div className="space-y-2">
+                        <p className="font-semibold text-white/90">Media Access Security levels:</p>
+                        <p><span className="font-medium text-white">Basic</span> — Media files are accessible via permanent public URLs. No token required.</p>
+                        <p><span className="font-medium text-white">Long lived token</span> — Media URLs require a token and remain valid for an extended period (e.g. 24 hours). Best for offline access or caching.</p>
+                        <p><span className="font-medium text-white">Short lived token</span> — Media URLs expire quickly (minutes to 1 hour). Most secure option, requires SDK with retry support for expired URLs.</p>
+                      </div>
+                    }>
+                      <InfoIcon className="w-3.5 h-3.5 text-gray-400 cursor-help" />
+                    </Tooltip>
                   </div>
-                  <p className="text-sm text-gray-500 mt-0.5">File access token per message receiver</p>
+                  <p className="text-sm text-gray-500">Control how media files (images, videos, audio, documents) are accessed by recipients.</p>
                 </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">Access Type</label>
+                  <select
+                    value={mediaAccessSecurity}
+                    onChange={(e) => setMediaAccessSecurity(e.target.value)}
+                    className="w-full max-w-xs px-4 py-2.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 cursor-pointer"
+                  >
+                    <option value="basic">Basic</option>
+                    <option value="long-lived-token">Long lived token</option>
+                    <option value="short-lived-token">Short lived token</option>
+                  </select>
+                </div>
+
+                {/* TTL Config — only for token-based options */}
+                {mediaAccessSecurity !== 'basic' && (
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">Token TTL (seconds)</label>
+                    <input
+                      type="number"
+                      value={tokenTTL}
+                      onChange={(e) => setTokenTTL(e.target.value)}
+                      placeholder="e.g. 3600"
+                      min="60"
+                      className="w-full max-w-xs px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 placeholder:text-gray-400"
+                    />
+                    <p className="text-xs text-gray-400 mt-1">
+                      {mediaAccessSecurity === 'long-lived-token'
+                        ? 'Recommended: 86400 (24 hours) or higher.'
+                        : 'Recommended: 600–3600 (10 min – 1 hour). URLs expire after this duration.'}
+                    </p>
+                  </div>
+                )}
+
+                {/* SDK Warning Banner */}
+                {mediaAccessSecurity !== 'basic' && (
+                  <div className="flex gap-3 p-3.5 bg-amber-50 border border-amber-200 rounded-lg">
+                    <svg className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                    <div>
+                      <p className="text-sm font-medium text-amber-800">Minimum SDK version required</p>
+                      <p className="text-xs text-amber-700 mt-0.5 leading-relaxed">
+                        Token-based media access uses presigned URLs that expire after the configured TTL. Your app must use a CometChat SDK version that supports automatic retry and URL refresh to avoid failed media loads. Ensure all clients are updated before enabling this.
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
