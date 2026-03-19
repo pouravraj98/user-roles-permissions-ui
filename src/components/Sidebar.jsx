@@ -65,7 +65,17 @@ const navStructure = {
   features: {
     label: 'FEATURES',
     items: [
-      { id: 'moderation', label: 'Moderation', icon: 'moderation', hasSubmenu: true },
+      {
+        id: 'moderation',
+        label: 'Moderation',
+        icon: 'moderation',
+        hasSubmenu: true,
+        submenu: [
+          { id: 'moderation-get-started', label: 'Get Started / Integrate', path: '/moderation/get-started' },
+          { id: 'moderation-logs', label: 'Logs', path: '/moderation/logs' },
+          { id: 'moderation-settings', label: 'Settings', path: '/moderation/settings' },
+        ]
+      },
       {
         id: 'notifications',
         label: 'Notifications',

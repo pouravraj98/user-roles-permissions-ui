@@ -11,6 +11,7 @@ import ConversationExplorer from './pages/ConversationExplorer'
 import AIAgents from './pages/AIAgents'
 import BYOAgents from './pages/BYOAgents'
 import ConnectAgent from './pages/ConnectAgent'
+import ModerationSettings from './pages/ModerationSettings'
 
 function Layout({ children, activePage }) {
   return (
@@ -125,6 +126,14 @@ function ConversationExplorerPage() {
   )
 }
 
+function ModerationSettingsPage() {
+  return (
+    <Layout activePage="moderation-settings">
+      <ModerationSettings />
+    </Layout>
+  )
+}
+
 function NotificationSettingsPage() {
   return (
     <Layout activePage="notifications-settings">
@@ -178,6 +187,7 @@ function App() {
         <Route path="/byo-agents/:agentId/edit" element={<ConnectAgentEditPage />} />
         <Route path="/chats/conversation-explorer" element={<ConversationExplorerPage />} />
         <Route path="/chats/settings" element={<ChatSettingsPage />} />
+        <Route path="/moderation/settings" element={<ModerationSettingsPage />} />
         <Route path="/notifications/settings" element={<NotificationSettingsPage />} />
         <Route path="/notifications/get-started" element={<NotificationGetStartedPage />} />
         <Route path="/notifications/logs" element={<NotificationLogsPage />} />
