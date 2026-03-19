@@ -153,7 +153,19 @@ export default function ChatSettings() {
                   </div>
                 )}
 
-                {/* SDK Warning Banner — only for Presigned URLs */}
+                {/* SDK Warning Banner — Token-based Signed URLs */}
+                {mediaAccessSecurity === 'long-lived-token' && (
+                  <div className="flex gap-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                    <svg className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                    <p className="text-xs text-amber-700 leading-relaxed">
+                      <span className="font-medium text-amber-800">Minimum SDK version required: v4.0+</span> Requires CometChat SDK or UI Kit version 4.0 and above. Ensure your app is updated before enabling this option.
+                    </p>
+                  </div>
+                )}
+
+                {/* SDK Warning Banner — Presigned URLs */}
                 {mediaAccessSecurity === 'short-lived-token' && (
                   <div className="flex gap-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
                     <svg className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
