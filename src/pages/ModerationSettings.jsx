@@ -38,9 +38,9 @@ const rulesData = [
     provider: null,
     mediaType: null,
     rules: [
-      { name: 'Profanity Filter', description: 'Identifies profane words in text and custom messages.', createdOn: 'Jun 14, 2024, 14:26', builtIn: true, enabled: false },
-      { name: 'Contact Details Filter', description: 'Identifies and removes phone numbers from text', createdOn: 'Jun 12, 2024, 15:28', builtIn: true, enabled: false },
-      { name: 'Email Filter', description: 'Identify and remove email address from messages', createdOn: 'Jun 11, 2024, 15:28', builtIn: true, enabled: false },
+      { name: 'Profanity Filter', ruleId: 'profanity-filter', description: 'Identifies profane words in text and custom messages.', condition: 'Text or Custom contains keywords from Profanity list', action: 'Blocked Message', createdOn: 'Jun 14, 2024, 14:26', lastEdited: 'Jul 09, 2024, 13:07', builtIn: true, enabled: false },
+      { name: 'Contact Details Filter', ruleId: 'contact-details-filter', description: 'Identifies and removes phone numbers from text', condition: 'Text or Custom contains phone number patterns', action: 'Blocked Message', createdOn: 'Jun 12, 2024, 15:28', lastEdited: 'Jun 12, 2024, 15:28', builtIn: true, enabled: false },
+      { name: 'Email Filter', ruleId: 'email-filter', description: 'Identify and remove email address from messages', condition: 'Text or Custom contains email address patterns', action: 'Blocked Message', createdOn: 'Jun 11, 2024, 15:28', lastEdited: 'Jun 11, 2024, 15:28', builtIn: true, enabled: false },
     ],
   },
   {
@@ -48,10 +48,10 @@ const rulesData = [
     provider: 'CometChat AI',
     mediaType: 'Text Rules',
     rules: [
-      { name: 'AI Spam Detection', description: 'AI-powered text moderation to detect spam messages.', createdOn: 'Jun 14, 2024, 13:00', builtIn: true, enabled: false },
-      { name: 'AI Scam Detection', description: 'AI-powered text moderation to detect scam messages.', createdOn: 'Jun 14, 2024, 13:00', builtIn: true, enabled: false },
-      { name: 'AI Platform Circumvention', description: 'AI powered Platform Circumvention detects and prevents attempts to bypass platform rules and restrictions.', createdOn: 'Jun 14, 2024, 13:00', builtIn: true, enabled: false },
-      { name: 'AI Message Toxicity', description: 'AI-powered tool to detect and flag toxic or harmful language in text, ensuring safer communication.', createdOn: 'Jun 14, 2024, 12:59', builtIn: true, enabled: false },
+      { name: 'AI Spam Detection', ruleId: 'ai-spam-detection', description: 'AI-powered text moderation to detect spam messages.', condition: 'Text or Custom contains keywords from Spam list', action: 'Blocked Message', createdOn: 'Jun 14, 2024, 13:00', lastEdited: 'Jul 09, 2024, 13:07', builtIn: true, enabled: false },
+      { name: 'AI Scam Detection', ruleId: 'ai-scam-detection', description: 'AI-powered text moderation to detect scam messages.', condition: 'Text or Custom contains keywords from Scam list', action: 'Blocked Message', createdOn: 'Jun 14, 2024, 13:00', lastEdited: 'Jul 09, 2024, 13:07', builtIn: true, enabled: false },
+      { name: 'AI Platform Circumvention', ruleId: 'platform-circumvention', description: 'AI powered Platform Circumvention detects and prevents attempts to bypass platform rules and restrictions.', condition: 'Text or Custom contains keywords from Platform Circumvention list', action: 'Blocked Message', createdOn: 'Jun 14, 2024, 13:00', lastEdited: 'Jul 09, 2024, 13:07', builtIn: true, enabled: false },
+      { name: 'AI Message Toxicity', ruleId: 'ai-message-toxicity', description: 'AI-powered tool to detect and flag toxic or harmful language in text, ensuring safer communication.', condition: 'Text or Custom contains toxic or harmful language', action: 'Flagged Message', createdOn: 'Jun 14, 2024, 12:59', lastEdited: 'Jul 09, 2024, 13:07', builtIn: true, enabled: false },
     ],
   },
   {
@@ -59,9 +59,9 @@ const rulesData = [
     provider: null,
     mediaType: 'Media Rules',
     rules: [
-      { name: 'AI Image Moderation', description: 'AI-powered image moderation to detect unsafe content.', createdOn: 'Jun 25, 2024, 13:48', builtIn: true, enabled: false },
-      { name: 'AI Video Moderation', description: 'AI-powered video moderation to detect unsafe content.', createdOn: 'Jun 14, 2024, 12:59', builtIn: true, enabled: false },
-      { name: 'Malware & Virus Scanner', description: 'Scans all file attachments for malware and viruses using industry-standard scanning engines. Detected files are blocked automatically.', createdOn: 'Mar 19, 2026, 10:00', builtIn: true, enabled: false, enterprise: true },
+      { name: 'AI Image Moderation', ruleId: 'ai-image-moderation', description: 'AI-powered image moderation to detect unsafe content.', condition: 'Image contains any unsafe content', action: 'Blocked Message', createdOn: 'Jun 25, 2024, 13:48', lastEdited: 'Jun 25, 2024, 13:48', builtIn: true, enabled: false },
+      { name: 'AI Video Moderation', ruleId: 'ai-video-moderation', description: 'AI-powered video moderation to detect unsafe content.', condition: 'Video contains any unsafe content', action: 'Blocked Message', createdOn: 'Jun 14, 2024, 12:59', lastEdited: 'Jun 14, 2024, 12:59', builtIn: true, enabled: false },
+      { name: 'Malware & Virus Scanner', ruleId: 'malware-virus-scanner', description: 'Scans all file attachments for malware and viruses using industry-standard scanning engines. Detected files are blocked automatically.', condition: 'Files contains Malware & Virus Scanner detection', action: 'Blocked Message', createdOn: 'Mar 19, 2026, 10:00', lastEdited: 'Mar 19, 2026, 10:00', builtIn: true, enabled: false, enterprise: true },
     ],
   },
   {
@@ -69,14 +69,14 @@ const rulesData = [
     provider: 'OpenAI',
     mediaType: 'Text Rules',
     rules: [
-      { name: 'Spam And Scam Prompt (All Languages)', description: 'A predefined OpenAI moderation prompt to identify spam messages, phishing attempts, and fraudulent schemes.', createdOn: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
-      { name: 'Non-Consensual Sexual Content Or Exploitation...', description: 'A predefined OpenAI moderation prompt to detect sexual exploitation, grooming, or non-consensual content.', createdOn: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
-      { name: 'Impersonation Or Fraud Prompt (All Languages)', description: 'A predefined OpenAI moderation prompt to detect deceptive attempts to impersonate individuals or organizations.', createdOn: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
-      { name: 'Hate And Harassment Prompt (All Languages)', description: 'A predefined OpenAI moderation prompt to detect hateful or harassing language toward individuals or groups.', createdOn: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
-      { name: 'Privacy And Sensitive Info Prompt (All Languages)', description: 'A predefined OpenAI moderation prompt to identify personal or sensitive information shared without consent.', createdOn: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
-      { name: 'Explicit Or Inappropriate Content Prompt (All La...', description: 'A predefined OpenAI moderation prompt to detect explicit sexual descriptions, graphic violence, or other unsuitable text.', createdOn: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
-      { name: 'Violent Or Terroristic Threats Prompt (All Langua...', description: 'A predefined OpenAI moderation prompt to detect content that encourages, promotes, or glorifies violence or extremism.', createdOn: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
-      { name: 'Self-Harm Or Suicidal Content Prompt (All Lang...', description: 'A predefined OpenAI moderation prompt to detect messages suggesting self-harm, suicidal thoughts, or related instructions.', createdOn: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
+      { name: 'Spam And Scam Prompt (All Languages)', ruleId: 'openai-spam-scam', description: 'A predefined OpenAI moderation prompt to identify spam messages, phishing attempts, and fraudulent schemes.', condition: 'Text or Custom contains spam or scam content', action: 'Blocked Message', createdOn: 'Feb 23, 2024, 16:10', lastEdited: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
+      { name: 'Non-Consensual Sexual Content Or Exploitation...', ruleId: 'openai-sexual-exploitation', description: 'A predefined OpenAI moderation prompt to detect sexual exploitation, grooming, or non-consensual content.', condition: 'Text or Custom contains sexual exploitation content', action: 'Blocked Message', createdOn: 'Feb 23, 2024, 16:10', lastEdited: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
+      { name: 'Impersonation Or Fraud Prompt (All Languages)', ruleId: 'openai-impersonation-fraud', description: 'A predefined OpenAI moderation prompt to detect deceptive attempts to impersonate individuals or organizations.', condition: 'Text or Custom contains impersonation or fraud content', action: 'Blocked Message', createdOn: 'Feb 23, 2024, 16:10', lastEdited: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
+      { name: 'Hate And Harassment Prompt (All Languages)', ruleId: 'openai-hate-harassment', description: 'A predefined OpenAI moderation prompt to detect hateful or harassing language toward individuals or groups.', condition: 'Text or Custom contains hate or harassment content', action: 'Blocked Message', createdOn: 'Feb 23, 2024, 16:10', lastEdited: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
+      { name: 'Privacy And Sensitive Info Prompt (All Languages)', ruleId: 'openai-privacy-sensitive', description: 'A predefined OpenAI moderation prompt to identify personal or sensitive information shared without consent.', condition: 'Text or Custom contains personal or sensitive information', action: 'Flagged Message', createdOn: 'Feb 23, 2024, 16:10', lastEdited: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
+      { name: 'Explicit Or Inappropriate Content Prompt (All La...', ruleId: 'openai-explicit-content', description: 'A predefined OpenAI moderation prompt to detect explicit sexual descriptions, graphic violence, or other unsuitable text.', condition: 'Text or Custom contains explicit or inappropriate content', action: 'Blocked Message', createdOn: 'Feb 23, 2024, 16:10', lastEdited: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
+      { name: 'Violent Or Terroristic Threats Prompt (All Langua...', ruleId: 'openai-violent-threats', description: 'A predefined OpenAI moderation prompt to detect content that encourages, promotes, or glorifies violence or extremism.', condition: 'Text or Custom contains violent or terroristic threats', action: 'Blocked Message', createdOn: 'Feb 23, 2024, 16:10', lastEdited: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
+      { name: 'Self-Harm Or Suicidal Content Prompt (All Lang...', ruleId: 'openai-self-harm', description: 'A predefined OpenAI moderation prompt to detect messages suggesting self-harm, suicidal thoughts, or related instructions.', condition: 'Text or Custom contains self-harm or suicidal content', action: 'Blocked Message', createdOn: 'Feb 23, 2024, 16:10', lastEdited: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
     ],
   },
   {
@@ -84,17 +84,87 @@ const rulesData = [
     provider: null,
     mediaType: 'Media Rules',
     rules: [
-      { name: 'Explicit Or Sexual Content Prompt', description: 'A predefined OpenAI moderation prompt to identify nudity, explicit sexual content, or suggestive imagery unsuitable for general audiences.', createdOn: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
-      { name: 'Fraud Or Scam Indicators Prompt', description: 'A predefined OpenAI moderation prompt to flag manipulated or fraudulent images, such as fake IDs or doctored screenshots.', createdOn: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
-      { name: 'Privacy Or Personal Data Prompt', description: 'A predefined OpenAI moderation prompt to identify images containing personal or sensitive data, such as IDs, addresses, or financial documents.', createdOn: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
-      { name: 'Self-Harm Or Suicidal Content Prompt', description: 'A predefined OpenAI moderation prompt to detect imagery suggesting self-harm, suicidal ideation, or content that promotes self-injury.', createdOn: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
-      { name: 'Minor Safety And Exploitation Prompt', description: 'A predefined OpenAI moderation prompt to detect child sexual content, exploitative imagery of minors, or unsafe depictions of children.', createdOn: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
-      { name: 'Hate Or Harassment Prompt', description: 'A predefined OpenAI moderation prompt to detect hate symbols, extremist insignia, and harassing imagery.', createdOn: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
-      { name: 'Graphic Violence Or Gore Prompt', description: 'A predefined OpenAI moderation prompt to detect images of extreme violence, gore, or other disturbing content.', createdOn: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
-      { name: 'Terrorism Or Extremist Promotion Prompt', description: 'A predefined OpenAI moderation prompt to detect extremist propaganda, terrorist symbols, or images promoting violent ideologies.', createdOn: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
+      { name: 'Explicit Or Sexual Content Prompt', ruleId: 'openai-media-explicit', description: 'A predefined OpenAI moderation prompt to identify nudity, explicit sexual content, or suggestive imagery unsuitable for general audiences.', condition: 'Image contains explicit or sexual content', action: 'Blocked Message', createdOn: 'Feb 23, 2024, 16:10', lastEdited: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
+      { name: 'Fraud Or Scam Indicators Prompt', ruleId: 'openai-media-fraud', description: 'A predefined OpenAI moderation prompt to flag manipulated or fraudulent images, such as fake IDs or doctored screenshots.', condition: 'Image contains fraud or scam indicators', action: 'Flagged Message', createdOn: 'Feb 23, 2024, 16:10', lastEdited: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
+      { name: 'Privacy Or Personal Data Prompt', ruleId: 'openai-media-privacy', description: 'A predefined OpenAI moderation prompt to identify images containing personal or sensitive data, such as IDs, addresses, or financial documents.', condition: 'Image contains personal or sensitive data', action: 'Flagged Message', createdOn: 'Feb 23, 2024, 16:10', lastEdited: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
+      { name: 'Self-Harm Or Suicidal Content Prompt', ruleId: 'openai-media-self-harm', description: 'A predefined OpenAI moderation prompt to detect imagery suggesting self-harm, suicidal ideation, or content that promotes self-injury.', condition: 'Image contains self-harm or suicidal content', action: 'Blocked Message', createdOn: 'Feb 23, 2024, 16:10', lastEdited: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
+      { name: 'Minor Safety And Exploitation Prompt', ruleId: 'openai-media-minor-safety', description: 'A predefined OpenAI moderation prompt to detect child sexual content, exploitative imagery of minors, or unsafe depictions of children.', condition: 'Image contains child exploitation content', action: 'Blocked Message', createdOn: 'Feb 23, 2024, 16:10', lastEdited: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
+      { name: 'Hate Or Harassment Prompt', ruleId: 'openai-media-hate', description: 'A predefined OpenAI moderation prompt to detect hate symbols, extremist insignia, and harassing imagery.', condition: 'Image contains hate symbols or harassing imagery', action: 'Blocked Message', createdOn: 'Feb 23, 2024, 16:10', lastEdited: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
+      { name: 'Graphic Violence Or Gore Prompt', ruleId: 'openai-media-violence', description: 'A predefined OpenAI moderation prompt to detect images of extreme violence, gore, or other disturbing content.', condition: 'Image contains graphic violence or gore', action: 'Blocked Message', createdOn: 'Feb 23, 2024, 16:10', lastEdited: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
+      { name: 'Terrorism Or Extremist Promotion Prompt', ruleId: 'openai-media-terrorism', description: 'A predefined OpenAI moderation prompt to detect extremist propaganda, terrorist symbols, or images promoting violent ideologies.', condition: 'Image contains terrorism or extremist promotion', action: 'Blocked Message', createdOn: 'Feb 23, 2024, 16:10', lastEdited: 'Feb 23, 2024, 16:10', builtIn: true, enabled: false },
     ],
   },
 ];
+
+function RuleDetailModal({ rule, onClose }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+
+      {/* Modal */}
+      <div className="relative bg-white rounded-xl shadow-xl w-full max-w-2xl mx-4 max-h-[80vh] overflow-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+          <div className="flex items-center gap-2">
+            <h2 className="text-lg font-semibold text-gray-900">{rule.name}</h2>
+            {rule.enterprise && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-purple-100 text-purple-700 uppercase tracking-wider">Enterprise</span>
+            )}
+          </div>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="px-6 py-5">
+          {/* Rule Info */}
+          <div className="border-l-2 border-gray-200 pl-5 space-y-2 mb-6">
+            <div className="text-sm">
+              <span className="text-gray-500">Rule Name: </span>
+              <span className="text-gray-900 font-medium">{rule.name}</span>
+            </div>
+            <div className="text-sm">
+              <span className="text-gray-500">Rule ID: </span>
+              <span className="text-gray-900 font-medium">{rule.ruleId}</span>
+            </div>
+            <div className="text-sm">
+              <span className="text-gray-500">Rule Description: </span>
+              <span className="text-gray-900">{rule.description}</span>
+            </div>
+          </div>
+
+          {/* Conditions */}
+          <div className="mb-6">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Conditions</h3>
+            <span className="inline-block px-3.5 py-2 bg-gray-100 text-sm text-gray-700 rounded-lg">{rule.condition}</span>
+          </div>
+
+          {/* Actions */}
+          <div className="mb-6">
+            <h3 className="text-sm font-semibold text-gray-900 mb-3">Actions</h3>
+            <span className="inline-block px-3.5 py-2 bg-gray-100 text-sm text-gray-700 rounded-lg">{rule.action}</span>
+          </div>
+
+          {/* Footer metadata */}
+          <div className="border-t border-gray-100 pt-4 flex items-center gap-8">
+            <div className="text-xs text-gray-400">
+              <span>Created On: </span>
+              <span className="text-gray-600 font-medium">{rule.createdOn}</span>
+            </div>
+            <div className="text-xs text-gray-400">
+              <span>Last Edited On: </span>
+              <span className="text-gray-600 font-medium">{rule.lastEdited}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // Select type options per message type
 const selectTypeOptions = {
@@ -357,6 +427,7 @@ export default function ModerationSettings() {
   const [moderationEnabled, setModerationEnabled] = useState(false);
   const [activeTab, setActiveTab] = useState('rules');
   const [showAddRule, setShowAddRule] = useState(false);
+  const [selectedRule, setSelectedRule] = useState(null);
   const [ruleStates, setRuleStates] = useState(() => {
     const states = {};
     rulesData.forEach(section => {
@@ -505,7 +576,7 @@ export default function ModerationSettings() {
                       <div className="col-span-2">
                         <span className="text-sm text-gray-500">{rule.createdOn}</span>
                       </div>
-                      <div className="col-span-1 flex justify-end">
+                      <div className="col-span-1 flex justify-end" onClick={() => setSelectedRule(rule)}>
                         <EyeIcon />
                       </div>
                     </div>
@@ -545,6 +616,9 @@ export default function ModerationSettings() {
           </div>
         )}
       </div>
+
+      {/* Rule Detail Modal */}
+      {selectedRule && <RuleDetailModal rule={selectedRule} onClose={() => setSelectedRule(null)} />}
     </div>
   );
 }
