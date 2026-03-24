@@ -171,7 +171,8 @@ const selectTypeOptions = {
   Text: ['Profanity', 'Spam', 'Scam', 'Toxicity', 'Platform Circumvention', 'Custom Pattern'],
   Image: ['Any unsafe content', 'Violence', 'Alcohol', 'Gambling', 'Drugs & Tobacco', 'Rude Gestures', 'Explicit Nudity', 'Non-Explicit Nudity', 'Swimwear or Underwear', 'Visually Disturbing', 'Hate Symbols'],
   Video: ['Any unsafe content', 'Violence', 'Alcohol', 'Gambling', 'Drugs & Tobacco', 'Rude Gestures', 'Explicit Nudity', 'Non-Explicit Nudity', 'Swimwear or Underwear', 'Visually Disturbing', 'Hate Symbols'],
-  Files: ['Malware & Virus Scanner'],
+  Audio: ['Malware & Virus'],
+  Files: ['Malware & Virus'],
 };
 
 function AddRuleForm({ onBack }) {
@@ -295,6 +296,7 @@ function AddRuleForm({ onBack }) {
                       <option value="Text">Text</option>
                       <option value="Image">Image</option>
                       <option value="Video">Video</option>
+                      <option value="Audio">Audio</option>
                       <option value="Files">Files</option>
                     </optgroup>
                   </select>
