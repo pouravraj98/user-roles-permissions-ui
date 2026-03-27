@@ -51,12 +51,30 @@ const Tooltip = ({ children, content }) => {
   );
 };
 
+const APP_TYPES = {
+  new: { label: 'New App', default: 'short-lived-token', options: ['short-lived-token'] },
+  existing: { label: 'Existing App', default: 'basic', options: ['basic', 'short-lived-token'] },
+  'existing-token': { label: 'Existing App (Token-based)', default: 'long-lived-token', options: ['long-lived-token', 'short-lived-token'] },
+};
+
+const OPTION_LABELS = {
+  basic: 'Public URLs',
+  'long-lived-token': 'Token-based Signed URLs',
+  'short-lived-token': 'Presigned URLs',
+};
+
 export default function ChatSettings() {
+  const [appType, setAppType] = useState('existing');
   const [chatLogs, setChatLogs] = useState(true);
-  const [mediaAccessSecurity, setMediaAccessSecurity] = useState('basic');
+  const [mediaAccessSecurity, setMediaAccessSecurity] = useState(APP_TYPES['existing'].default);
   const [tokenTTL, setTokenTTL] = useState('86400');
   const [savedTTL, setSavedTTL] = useState('86400');
   const [ttlSaved, setTtlSaved] = useState(false);
+
+  const handleAppTypeChange = (type) => {
+    setAppType(type);
+    setMediaAccessSecurity(APP_TYPES[type].default);
+  };
 
   const [customMessages, setCustomMessages] = useState(true);
   const [groupActions, setGroupActions] = useState(true);
@@ -78,6 +96,26 @@ export default function ChatSettings() {
       </div>
 
       <div className="px-8 py-8 space-y-0">
+        {/* Demo: App Type Switcher */}
+        <div className="mb-6 flex items-center gap-3">
+          <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Demo mode:</span>
+          <div className="inline-flex rounded-lg border border-gray-200 bg-white p-0.5">
+            {Object.entries(APP_TYPES).map(([key, { label }]) => (
+              <button
+                key={key}
+                onClick={() => handleAppTypeChange(key)}
+                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                  appType === key
+                    ? 'bg-gray-900 text-white'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Section 1: General Configuration */}
         <div className="grid grid-cols-12 gap-8 pb-10">
           <div className="col-span-4">
@@ -109,8 +147,12 @@ export default function ChatSettings() {
                       <Tooltip content={
                         <div className="space-y-2">
                           <p className="font-semibold text-white/90">Media URL Access levels:</p>
-                          <p><span className="font-medium text-white">Public URLs</span> — Media files are accessible via direct, unrestricted URLs. No authentication required.</p>
-                          <p><span className="font-medium text-white">Token-based Signed URLs</span> — Media URLs include an access token generated using the authToken or apiKey. URLs expire when the associated authToken or apiKey is deleted.</p>
+                          {APP_TYPES[appType].options.includes('basic') && (
+                            <p><span className="font-medium text-white">Public URLs</span> — Media files are accessible via direct, unrestricted URLs. No authentication required.</p>
+                          )}
+                          {APP_TYPES[appType].options.includes('long-lived-token') && (
+                            <p><span className="font-medium text-white">Token-based Signed URLs</span> — Media URLs include an access token generated using the authToken or apiKey. URLs expire when the associated authToken or apiKey is deleted.</p>
+                          )}
                           <p><span className="font-medium text-white">Presigned URLs</span> — Media URLs are time-limited with a configurable TTL. Requires SDK v5.x+ with retry support.</p>
                         </div>
                       }>
@@ -119,15 +161,21 @@ export default function ChatSettings() {
                     </div>
                     <p className="text-sm text-gray-500">Control how media file URLs are secured and accessed.</p>
                   </div>
-                  <select
-                    value={mediaAccessSecurity}
-                    onChange={(e) => setMediaAccessSecurity(e.target.value)}
-                    className="w-64 px-4 py-2.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 cursor-pointer flex-shrink-0"
-                  >
-                    <option value="basic">Public URLs</option>
-                    <option value="long-lived-token">Token-based Signed URLs</option>
-                    <option value="short-lived-token">Presigned URLs</option>
-                  </select>
+                  {APP_TYPES[appType].options.length === 1 ? (
+                    <span className="w-64 px-4 py-2.5 text-sm border border-gray-200 rounded-lg bg-gray-50 text-gray-700 flex-shrink-0">
+                      {OPTION_LABELS[APP_TYPES[appType].options[0]]}
+                    </span>
+                  ) : (
+                    <select
+                      value={mediaAccessSecurity}
+                      onChange={(e) => setMediaAccessSecurity(e.target.value)}
+                      className="w-64 px-4 py-2.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 cursor-pointer flex-shrink-0"
+                    >
+                      {APP_TYPES[appType].options.map((opt) => (
+                        <option key={opt} value={opt}>{OPTION_LABELS[opt]}</option>
+                      ))}
+                    </select>
+                  )}
                 </div>
 
                 {/* Warning for Token-based Signed URLs */}
