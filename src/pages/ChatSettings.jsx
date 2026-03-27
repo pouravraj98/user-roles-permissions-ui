@@ -55,6 +55,8 @@ export default function ChatSettings() {
   const [chatLogs, setChatLogs] = useState(true);
   const [mediaAccessSecurity, setMediaAccessSecurity] = useState('basic');
   const [tokenTTL, setTokenTTL] = useState('86400');
+  const [savedTTL, setSavedTTL] = useState('86400');
+  const [ttlSaved, setTtlSaved] = useState(false);
 
   const [customMessages, setCustomMessages] = useState(true);
   const [groupActions, setGroupActions] = useState(true);
@@ -137,18 +139,34 @@ export default function ChatSettings() {
                         Recommended: 86400 (1 day). URLs expire after this duration.
                       </p>
                     </div>
-                    <div className="flex-shrink-0">
+                    <div className="flex-shrink-0 flex items-center gap-2">
                       <div className="relative">
                         <input
                           type="number"
                           value={tokenTTL}
-                          onChange={(e) => setTokenTTL(e.target.value)}
+                          onChange={(e) => { setTokenTTL(e.target.value); setTtlSaved(false); }}
                           placeholder="e.g. 86400"
                           min="60"
                           className="w-48 px-4 py-2.5 pr-16 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-400 placeholder:text-gray-400"
                         />
                         <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-gray-400">seconds</span>
                       </div>
+                      {tokenTTL !== savedTTL && !ttlSaved && (
+                        <button
+                          onClick={() => { setSavedTTL(tokenTTL); setTtlSaved(true); setTimeout(() => setTtlSaved(false), 2000); }}
+                          className="px-4 py-2.5 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors whitespace-nowrap"
+                        >
+                          Save
+                        </button>
+                      )}
+                      {ttlSaved && (
+                        <span className="flex items-center gap-1 text-sm text-green-600 font-medium whitespace-nowrap">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Saved
+                        </span>
+                      )}
                     </div>
                   </div>
                 )}
