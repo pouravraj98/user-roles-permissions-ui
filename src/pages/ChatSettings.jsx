@@ -103,10 +103,10 @@ export default function ChatSettings() {
                 <div className="flex items-start gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-1.5 mb-0.5">
-                      <span className="text-sm font-semibold text-gray-900">Media URL Signing</span>
+                      <span className="text-sm font-semibold text-gray-900">Media URL Access</span>
                       <Tooltip content={
                         <div className="space-y-2">
-                          <p className="font-semibold text-white/90">Media URL Signing levels:</p>
+                          <p className="font-semibold text-white/90">Media URL Access levels:</p>
                           <p><span className="font-medium text-white">Public URLs</span> — Media files are accessible via direct, unrestricted URLs. No authentication required.</p>
                           <p><span className="font-medium text-white">Token-based Signed URLs</span> — Media URLs include an access token generated using the authToken or apiKey. URLs expire when the associated authToken or apiKey is deleted.</p>
                           <p><span className="font-medium text-white">Presigned URLs</span> — Media URLs are time-limited with a configurable TTL. Requires SDK v5.x+ with retry support.</p>
