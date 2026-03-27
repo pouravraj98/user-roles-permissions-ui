@@ -130,6 +130,20 @@ export default function ChatSettings() {
                   </select>
                 </div>
 
+                {/* Warning for Token-based Signed URLs */}
+                {mediaAccessSecurity === 'long-lived-token' && (
+                  <div className="flex items-start gap-2.5 px-3.5 py-3 bg-amber-50 border border-amber-200 rounded-lg">
+                    <svg className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                      <line x1="12" y1="9" x2="12" y2="13" />
+                      <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    <p className="text-xs text-amber-800 leading-relaxed">
+                      Token-based Signed URLs require <span className="font-semibold">SDK v4.0+</span>. Media URLs will include an access token tied to the user's authToken or apiKey. URLs remain valid until the associated token is deleted.
+                    </p>
+                  </div>
+                )}
+
                 {/* TTL Config — only for presigned URLs */}
                 {mediaAccessSecurity === 'short-lived-token' && (
                   <div className="flex items-start gap-4">
@@ -171,29 +185,6 @@ export default function ChatSettings() {
                   </div>
                 )}
 
-                {/* SDK Warning Banner — Token-based Signed URLs */}
-                {mediaAccessSecurity === 'long-lived-token' && (
-                  <div className="flex gap-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                    <svg className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                    </svg>
-                    <p className="text-xs text-amber-700 leading-relaxed">
-                      <span className="font-medium text-amber-800">Minimum SDK version required: v4.0+</span> Requires CometChat SDK or UI Kit version 4.0 and above. Ensure your app is updated before enabling this option.
-                    </p>
-                  </div>
-                )}
-
-                {/* SDK Warning Banner — Presigned URLs */}
-                {mediaAccessSecurity === 'short-lived-token' && (
-                  <div className="flex gap-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                    <svg className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                    </svg>
-                    <p className="text-xs text-amber-700 leading-relaxed">
-                      <span className="font-medium text-amber-800">Minimum SDK version required: v5.x+</span> Presigned URLs expire after the configured TTL. Ensure your app uses CometChat SDK v5.0 or above which supports automatic retry and URL refresh.
-                    </p>
-                  </div>
-                )}
               </div>
             </div>
           </div>
