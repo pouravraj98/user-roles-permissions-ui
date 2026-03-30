@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const ContactModal = ({ isOpen, onClose, featureName }) => {
   const [isSuccess, setIsSuccess] = useState(false);
@@ -670,7 +671,11 @@ function TemplatesAndSounds() {
 }
 
 export default function NotificationSettings() {
-  const [activeTab, setActiveTab] = useState('preferences');
+  const location = useLocation();
+  const navigate = useNavigate();
+  const slug = location.pathname.split('/').pop();
+  const activeTab = slug === 'templates' ? 'templates' : slug === 'providers' ? 'providers' : 'preferences';
+  const setActiveTab = (tab) => navigate(`/notifications/settings/${tab}`);
   const [openSections, setOpenSections] = useState(['push']);
   const [showContactModal, setShowContactModal] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState('');

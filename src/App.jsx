@@ -188,7 +188,10 @@ function App() {
         <Route path="/chats/conversation-explorer" element={<ConversationExplorerPage />} />
         <Route path="/chats/settings" element={<ChatSettingsPage />} />
         <Route path="/moderation/settings" element={<ModerationSettingsPage />} />
-        <Route path="/notifications/settings" element={<NotificationSettingsPage />} />
+        <Route path="/notifications/settings" element={<Navigate to="/notifications/settings/preferences" replace />} />
+        <Route path="/notifications/settings/providers" element={<NotificationSettingsPage />} />
+        <Route path="/notifications/settings/preferences" element={<NotificationSettingsPage />} />
+        <Route path="/notifications/settings/templates" element={<NotificationSettingsPage />} />
         <Route path="/notifications/get-started" element={<NotificationGetStartedPage />} />
         <Route path="/notifications/logs" element={<NotificationLogsPage />} />
       </Routes>
