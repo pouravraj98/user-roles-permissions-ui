@@ -675,10 +675,18 @@ export default function NotificationSettings() {
   const [showContactModal, setShowContactModal] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState('');
 
+  const [prefsDirty, setPrefsDirty] = useState(false);
+  const [prefsSaved, setPrefsSaved] = useState(false);
+
   const handleToggleClick = (featureName) => {
     setSelectedFeature(featureName);
     setShowContactModal(true);
+    setPrefsDirty(true);
+    setPrefsSaved(false);
   };
+
+  const handlePrefsSave = () => { setPrefsDirty(false); setPrefsSaved(true); setTimeout(() => setPrefsSaved(false), 2000); };
+  const handlePrefsDiscard = () => { setPrefsDirty(false); };
 
   // Push Notification Preferences state
   const [pushPreferences, setPushPreferences] = useState({
@@ -714,6 +722,8 @@ export default function NotificationSettings() {
 
   const updatePushPreference = (key, value) => {
     setPushPreferences(prev => ({ ...prev, [key]: value }));
+    setPrefsDirty(true);
+    setPrefsSaved(false);
   };
 
   const tabs = [
@@ -868,15 +878,6 @@ export default function NotificationSettings() {
               </>
             )}
 
-            {/* Action Bar */}
-            <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-end gap-3">
-              <button className="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
-                Reset to default
-              </button>
-              <button className="px-5 py-2 text-sm font-medium text-white bg-purple-500 rounded-lg hover:bg-purple-600 shadow-sm">
-                Save
-              </button>
-            </div>
           </div>
         )}
 
@@ -891,6 +892,38 @@ export default function NotificationSettings() {
         )}
       </div>
 
+
+      {/* Unsaved changes floating pill for Preferences */}
+      {prefsDirty && activeTab === 'preferences' && createPortal(
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-4 py-2.5 bg-white rounded-full shadow-[0_4px_24px_rgba(0,0,0,0.16)] border border-gray-200 animate-[slideUp_0.2s_ease-out]">
+          <span className="text-sm font-medium text-gray-700">Unsaved changes</span>
+          <div className="w-px h-5 bg-gray-200" />
+          <button
+            onClick={handlePrefsDiscard}
+            className="px-3 py-1.5 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            Discard
+          </button>
+          <button
+            onClick={handlePrefsSave}
+            className="px-4 py-1.5 text-sm font-medium text-white bg-purple-500 rounded-full hover:bg-purple-600 transition-colors"
+          >
+            Save
+          </button>
+        </div>,
+        document.body
+      )}
+
+      {/* Saved confirmation for Preferences */}
+      {prefsSaved && createPortal(
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white text-sm font-medium rounded-lg shadow-lg animate-[slideUp_0.2s_ease-out]">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+          Changes saved
+        </div>,
+        document.body
+      )}
 
       {/* Contact Modal */}
       <ContactModal
