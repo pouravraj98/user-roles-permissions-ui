@@ -1,6 +1,6 @@
 # Dashboard Prototype — Pattern Reference
 
-Last updated: 2026-04-09
+Last updated: 2026-04-09 (added Audit Logs page)
 
 Use this file during `/design` instead of reading through all prototype code. Update this file whenever the prototype is modified.
 
@@ -34,7 +34,8 @@ src/
     ├── ModerationSettings.jsx — Rule management + detail modals
     ├── AIAgents.jsx           — Agent grid + toggles
     ├── BYOAgents.jsx          — Agent list + tabs
-    └── ConnectAgent.jsx       — Agent connection form
+    ├── ConnectAgent.jsx       — Agent connection form
+    └── AuditLogs.jsx          — Audit log viewer (table, filters, side panel, plan-gated)
 ```
 
 ## Master Layout
@@ -74,7 +75,7 @@ src/
 - Insights
 
 **ACCOUNT:**
-- Application (submenu)
+- Application → Credentials `/application/credentials`, Webhooks `/application/webhooks`, Team Members `/application/team-members`, Audit Logs `/application/audit-logs`, Plans & Billing `/application/plans`, Settings `/application/settings`
 - Profile (chevron)
 - Resources (chevron)
 
@@ -120,6 +121,16 @@ Used by: Connect Agent
 - Horizontal scrolling platform selector
 - Left-aligned form below
 - Max-width: `max-w-2xl`
+
+### Pattern G: Filterable Table + Side Panel
+Used by: Audit Logs
+- Fixed header with title + export button
+- Filter bar below header: multiple dropdown filters + active filter chips + entry count
+- Grid-based data table with clickable rows
+- Side panel (400px) slides from right on row click, overlay with shadow
+- Pagination bar at bottom with page numbers
+- Three states: populated (table), empty (icon + text), plan-gated (blurred sample + upgrade CTA)
+- Investigation pivot: clicking actor name applies filter, shown as purple chip with X to clear
 
 ## Components
 
@@ -184,6 +195,49 @@ Used in: Conversation Explorer, Groups
 - Icon + title + description + optional CTA button
 - Centered in content area
 - Examples: "No conversations found", "No groups found"
+
+### Side Panel (Overlay)
+Used in: Audit Logs
+- Slides from right (400px width), overlay on content
+- Animation: `slideInRight 0.2s ease-out`
+- Header with title + close (X) button
+- Scrollable content area
+- Backdrop: click outside to close
+- `bg-white border-l border-gray-200 shadow-xl`
+
+### Filter Dropdown
+Used in: Audit Logs
+- Button with label + chevron, bordered
+- Active state: `border-purple-300 bg-purple-50 text-purple-700`
+- Dropdown: `rounded-xl shadow-lg` with "All" option + list
+- Fixed-position overlay with backdrop click to close
+
+### Active Filter Chip
+Used in: Audit Logs (investigation pivot)
+- `bg-purple-50 border border-purple-200 rounded-full`
+- Icon + label + X button to clear
+- Purple text: `text-purple-700`
+
+### Pagination
+Used in: Audit Logs
+- Bottom bar: "Showing X-Y of Z" text + page number buttons
+- Active page: `bg-gray-900 text-white` rounded-lg
+- Inactive: `text-gray-600 hover:bg-gray-100`
+- Prev/next arrows with disabled state
+
+### Plan-Gated State (Blurred Upgrade CTA)
+Used in: Audit Logs
+- Blurred sample content: `filter: blur(4px)`, `pointer-events-none select-none`
+- Overlay: `bg-white/60` with centered card
+- Card: `rounded-2xl shadow-lg` with icon, title, description, purple CTA button
+- Communicates feature value and drives upgrade
+
+### Before/After Diff
+Used in: Audit Logs side panel
+- Container: `border border-gray-200 rounded-xl`
+- Header: field name on `bg-gray-50`
+- Before: red dot + `bg-red-50` value
+- After: green dot + `bg-green-50` value
 
 ### Toast/Feedback
 - Confirmation modals for save/reset/delete
