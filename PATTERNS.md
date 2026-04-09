@@ -1,6 +1,6 @@
 # Dashboard Prototype — Pattern Reference
 
-Last updated: 2026-04-09
+Last updated: 2026-04-09 (added Audit Logs page)
 
 Use this file during `/design` instead of reading through all prototype code. Update this file whenever the prototype is modified.
 
@@ -34,7 +34,8 @@ src/
     ├── ModerationSettings.jsx — Rule management + detail modals
     ├── AIAgents.jsx           — Agent grid + toggles
     ├── BYOAgents.jsx          — Agent list + tabs
-    └── ConnectAgent.jsx       — Agent connection form
+    ├── ConnectAgent.jsx       — Agent connection form
+    └── AuditLogs.jsx          — Audit log viewer (table, filters, side panel, plan-gated)
 ```
 
 ## Master Layout
@@ -74,7 +75,7 @@ src/
 - Insights
 
 **ACCOUNT:**
-- Application (submenu)
+- Application → Credentials `/application/credentials`, Webhooks `/application/webhooks`, Team Members `/application/team-members`, Audit Logs `/application/audit-logs`, Plans & Billing `/application/plans`, Settings `/application/settings`
 - Profile (chevron)
 - Resources (chevron)
 
@@ -120,6 +121,18 @@ Used by: Connect Agent
 - Horizontal scrolling platform selector
 - Left-aligned form below
 - Max-width: `max-w-2xl`
+
+### Pattern G: Filterable Table + Side Panel
+Used by: Audit Logs
+- Header with title/subtitle + Export and Filter buttons (top-right)
+- Filter button toggles chip row below header (+ icon prefix, search + checkboxes dropdown, Clear/Apply footer)
+- Section filter drives Action filter options (dependent filters)
+- Table inside `bg-white rounded-xl border` card with `p-6` wrapper
+- Clickable rows open 400px side panel from right (overlay with slide animation)
+- Side panel: resource headline, action/outcome/source badges, actor row, 2-col metadata grid, changes section (before/after for updates, key-value list for create/delete/events)
+- Pagination below table card
+- Three states: populated, empty (disabled buttons visible), plan-gated (blurred + upgrade CTA, disabled buttons visible)
+- Investigation pivot: clicking actor name applies purple filter chip
 
 ## Components
 
@@ -184,6 +197,27 @@ Used in: Conversation Explorer, Groups
 - Icon + title + description + optional CTA button
 - Centered in content area
 - Examples: "No conversations found", "No groups found"
+
+### Side Panel (Overlay)
+Used in: Audit Logs
+- 400px, slides from right with `slideInRight` animation
+- Header with title + close (X) button
+- Sections separated by `border-b border-gray-100`
+- Backdrop click to close
+
+### Filter Chips (Expandable)
+Used in: Audit Logs
+- Toggled by Filter button in header
+- Rounded-full chips with `+` icon prefix
+- Dropdown: search input + checkbox options + Clear/Apply footer
+- Active filter: `border-purple-300 bg-purple-50 text-purple-700`
+
+### Plan-Gated State (Blurred Upgrade CTA)
+Used in: Audit Logs
+- Blurred sample content: `filter: blur(4px)`, `pointer-events-none select-none`
+- Overlay: `bg-white/60` with centered card
+- Card: `rounded-2xl shadow-lg` with icon, title, description, purple CTA button
+- Export/Filter buttons visible but disabled
 
 ### Toast/Feedback
 - Confirmation modals for save/reset/delete
