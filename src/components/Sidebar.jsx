@@ -93,7 +93,20 @@ const navStructure = {
   account: {
     label: 'ACCOUNT',
     items: [
-      { id: 'application', label: 'Application', icon: 'grid', hasSubmenu: true },
+      {
+        id: 'application',
+        label: 'Application',
+        icon: 'grid',
+        hasSubmenu: true,
+        submenu: [
+          { id: 'application-credentials', label: 'Credentials', path: '/application/credentials' },
+          { id: 'application-webhooks', label: 'Webhooks', path: '/application/webhooks' },
+          { id: 'application-team-members', label: 'Team Members', path: '/application/team-members' },
+          { id: 'application-audit-logs', label: 'Audit Logs', path: '/application/audit-logs' },
+          { id: 'application-plans', label: 'Plans & Billing', path: '/application/plans' },
+          { id: 'application-settings', label: 'Settings', path: '/application/settings' },
+        ]
+      },
       { id: 'profile', label: 'Profile', icon: 'profile', hasChevron: true },
       { id: 'resources', label: 'Resources', icon: 'resources', hasChevron: true },
     ]
@@ -203,6 +216,7 @@ export default function Sidebar({ activePage = 'user-roles' }) {
     if (activePage?.startsWith('ai-agents')) menus.push('ai-agents');
     if (activePage?.startsWith('byo-agents')) menus.push('byo-agents');
     if (activePage?.startsWith('notifications')) menus.push('notifications');
+    if (activePage?.startsWith('application')) menus.push('application');
     return menus;
   });
 
