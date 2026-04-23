@@ -13,6 +13,8 @@ import BYOAgents from './pages/BYOAgents'
 import ConnectAgent from './pages/ConnectAgent'
 import ModerationSettings from './pages/ModerationSettings'
 import AuditLogs from './pages/AuditLogs'
+import SSO from './pages/SSO'
+import Login from './pages/Login'
 
 function Layout({ children, activePage }) {
   return (
@@ -151,6 +153,14 @@ function AuditLogsPage() {
   )
 }
 
+function SSOPage() {
+  return (
+    <Layout activePage="application-sso">
+      <SSO />
+    </Layout>
+  )
+}
+
 function NotificationGetStartedPage() {
   return (
     <Layout activePage="notifications-get-started">
@@ -198,6 +208,8 @@ function App() {
         <Route path="/chats/settings" element={<ChatSettingsPage />} />
         <Route path="/moderation/settings" element={<ModerationSettingsPage />} />
         <Route path="/application/audit-logs" element={<AuditLogsPage />} />
+        <Route path="/application/sso" element={<SSOPage />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/notifications/settings" element={<Navigate to="/notifications/settings/preferences" replace />} />
         <Route path="/notifications/settings/providers" element={<NotificationSettingsPage />} />
         <Route path="/notifications/settings/preferences" element={<NotificationSettingsPage />} />

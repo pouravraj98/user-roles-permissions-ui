@@ -1,6 +1,6 @@
 # Dashboard Prototype — Pattern Reference
 
-Last updated: 2026-04-09 (added Audit Logs page)
+Last updated: 2026-04-23 (added SSO page + Login page)
 
 Use this file during `/design` instead of reading through all prototype code. Update this file whenever the prototype is modified.
 
@@ -35,7 +35,9 @@ src/
     ├── AIAgents.jsx           — Agent grid + toggles
     ├── BYOAgents.jsx          — Agent list + tabs
     ├── ConnectAgent.jsx       — Agent connection form
-    └── AuditLogs.jsx          — Audit log viewer (table, filters, side panel, plan-gated)
+    ├── AuditLogs.jsx          — Audit log viewer (table, filters, side panel, plan-gated)
+    ├── SSO.jsx                — SAML SSO config page (empty/enabled/enforced/gated, 5-step wizard)
+    └── Login.jsx              — Dashboard login page (standalone, not in Layout)
 ```
 
 ## Master Layout
@@ -75,9 +77,12 @@ src/
 - Insights
 
 **ACCOUNT:**
-- Application → Credentials `/application/credentials`, Webhooks `/application/webhooks`, Team Members `/application/team-members`, Audit Logs `/application/audit-logs`, Plans & Billing `/application/plans`, Settings `/application/settings`
+- Application → Credentials `/application/credentials`, Webhooks `/application/webhooks`, Team Members `/application/team-members`, SSO `/application/sso`, Audit Logs `/application/audit-logs`, Plans & Billing `/application/plans`, Settings `/application/settings`
 - Profile (chevron)
 - Resources (chevron)
+
+**STANDALONE (outside Layout):**
+- Login `/login` — Dashboard login page, no sidebar
 
 Sidebar auto-expands submenus based on `activePage` prop. Active item: `bg-gray-100 text-gray-900 font-medium`. Cross-links (external) use arrow icon.
 
@@ -121,6 +126,27 @@ Used by: Connect Agent
 - Horizontal scrolling platform selector
 - Left-aligned form below
 - Max-width: `max-w-2xl`
+
+### Pattern H: Status Card + Toggles + Wizard Modal
+Used by: SSO
+- Header with title/subtitle + state switcher (prototype only: gated/empty/enabled/enforced)
+- Four view states: `gated` (blurred + upgrade CTA — reuses Audit Logs gate pattern), `empty` (centered setup card with IdP logos + primary CTA), `enabled` (status card + toggles), `enforced` (status card + purple info banner with break-glass Owner + toggles)
+- **Status card:** colored brand-initial square (48px) + name + status pill (green=Enabled, purple=Enforced) + right-aligned secondary actions (Test Connection, Reconfigure)
+- **Enforcement banner (purple):** purple-50 bg + purple-200 border + shield icon + break-glass Owner row (white card inside the banner)
+- **Toggle list card:** `bg-white rounded-xl border divide-y` with toggle rows (label+description on left, toggle on right)
+- **Danger zone:** separate card with red-bordered action button
+- **Wizard modal:** 5-step modal with progress bar — `max-w-2xl`, step header ("Step N of 5"), progress bar (purple-500), Continue disabled until step is valid, Back/Cancel on left, Continue/Enable on right
+- **Confirmation modals:** amber icon for warning (enforce), red icon for destructive (disable); bullet list of consequences with check-circle icons
+
+### Pattern I: Authentication Page (Standalone)
+Used by: Login
+- Standalone full-screen layout — NOT inside main Layout/Sidebar
+- Top-left: "cometchat" wordmark (22px, `font-normal` + `font-semibold`)
+- Centered column: `max-w-md` with `mt-8`
+- Welcome heading → social login buttons → "Or" divider → email/password → submit → sign-up link
+- Social buttons: full-width white + gray border, inline brand SVG icon
+- Three views via state switcher (prototype only): `default`, `sso-email` (email entry step after clicking "Sign in with SSO"), `redirecting` (spinner + IdP callout)
+- SSO email entry view: back button + purple icon tile + heading + email input + Continue button
 
 ### Pattern G: Filterable Table + Side Panel
 Used by: Audit Logs
@@ -213,11 +239,33 @@ Used in: Audit Logs
 - Active filter: `border-purple-300 bg-purple-50 text-purple-700`
 
 ### Plan-Gated State (Blurred Upgrade CTA)
-Used in: Audit Logs
+Used in: Audit Logs, SSO
 - Blurred sample content: `filter: blur(4px)`, `pointer-events-none select-none`
 - Overlay: `bg-white/60` with centered card
 - Card: `rounded-2xl shadow-lg` with icon, title, description, purple CTA button
-- Export/Filter buttons visible but disabled
+- For table-style pages (Audit Logs): Export/Filter buttons visible but disabled
+- For settings-style pages (SSO): placeholder cards with gray rounded shapes
+
+### Copy-to-Clipboard Input Row
+Used in: SSO wizard Step 2
+- Label (`text-[10px] font-semibold text-gray-500 uppercase tracking-wider`)
+- Flex row: read-only input (`bg-white border rounded-lg font-mono text-xs`) + Copy button
+- Copy button shows "Copied" with green checkmark for 1.5s after click
+
+### Multi-Step Wizard Modal
+Used in: SSO setup
+- Modal: `max-w-2xl rounded-2xl shadow-xl` with `max-h-[90vh]`
+- Header (flex-shrink-0): Title + "Step N of 5" + close X
+- Progress bar (flex-shrink-0): `h-1 bg-gray-100` with `bg-purple-500` fill at `(step/total)*100%`
+- Body (flex-1 overflow-auto): step content
+- Footer (flex-shrink-0): Back/Cancel on left, Continue/Enable on right; Continue disabled until step valid
+- Step validation examples: IdP picked (step 1), metadata parsed (step 3), test passed (step 4)
+
+### Simulated External Auth Flow
+Used in: SSO Test Connection (wizard Step 4)
+- Centered in gray-50 card inside modal
+- Four states via `useState`: `idle` (icon + CTA button), `running` (animate-spin for 1.5s), `success` (green check + details), `failure` (red alert + error message)
+- On success: allows progression to next wizard step
 
 ### Toast/Feedback
 - Confirmation modals for save/reset/delete

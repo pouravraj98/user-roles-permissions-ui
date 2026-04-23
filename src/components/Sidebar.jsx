@@ -102,6 +102,7 @@ const navStructure = {
           { id: 'application-credentials', label: 'Credentials', path: '/application/credentials' },
           { id: 'application-webhooks', label: 'Webhooks', path: '/application/webhooks' },
           { id: 'application-team-members', label: 'Team Members', path: '/application/team-members' },
+          { id: 'application-sso', label: 'SSO', path: '/application/sso' },
           { id: 'application-audit-logs', label: 'Audit Logs', path: '/application/audit-logs' },
           { id: 'application-plans', label: 'Plans & Billing', path: '/application/plans' },
           { id: 'application-settings', label: 'Settings', path: '/application/settings' },
