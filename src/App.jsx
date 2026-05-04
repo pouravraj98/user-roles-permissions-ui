@@ -15,6 +15,8 @@ import ModerationSettings from './pages/ModerationSettings'
 import AuditLogs from './pages/AuditLogs'
 import SSO from './pages/SSO'
 import Login from './pages/Login'
+import ChatGetStarted from './pages/ChatGetStarted'
+import ChatIntegrationSteps from './pages/ChatIntegrationSteps'
 
 function Layout({ children, activePage }) {
   return (
@@ -121,6 +123,22 @@ function ChatSettingsPage() {
   )
 }
 
+function ChatGetStartedPage() {
+  return (
+    <Layout activePage="chats-get-started">
+      <ChatGetStarted />
+    </Layout>
+  )
+}
+
+function ChatIntegrationStepsPage() {
+  return (
+    <Layout activePage="chats-get-started">
+      <ChatIntegrationSteps />
+    </Layout>
+  )
+}
+
 function ConversationExplorerPage() {
   return (
     <Layout activePage="chats-conversation-explorer">
@@ -204,6 +222,8 @@ function App() {
         <Route path="/byo-agents" element={<BYOAgentsPage />} />
         <Route path="/byo-agents/add" element={<ConnectAgentAddPage />} />
         <Route path="/byo-agents/:agentId/edit" element={<ConnectAgentEditPage />} />
+        <Route path="/chats/get-started" element={<ChatGetStartedPage />} />
+        <Route path="/chats/get-started/integrate" element={<ChatIntegrationStepsPage />} />
         <Route path="/chats/conversation-explorer" element={<ConversationExplorerPage />} />
         <Route path="/chats/settings" element={<ChatSettingsPage />} />
         <Route path="/moderation/settings" element={<ModerationSettingsPage />} />
