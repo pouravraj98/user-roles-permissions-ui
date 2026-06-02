@@ -1,6 +1,6 @@
 # Dashboard Prototype — Pattern Reference
 
-Last updated: 2026-04-23 (added SSO page + Login page)
+Last updated: 2026-06-02 (Plans & Billing: added AI Agents product, Credits tab, unified Billing)
 
 Use this file during `/design` instead of reading through all prototype code. Update this file whenever the prototype is modified.
 
@@ -37,6 +37,8 @@ src/
     ├── ConnectAgent.jsx       — Agent connection form
     ├── AuditLogs.jsx          — Audit log viewer (table, filters, side panel, plan-gated)
     ├── SSO.jsx                — SAML SSO config page (empty/enabled/enforced/gated, 5-step wizard)
+    ├── PlansBilling.jsx       — Plans & Billing (global): Plans (Chat MAU tiers + AI credit plans via product switcher), Credits tab, unified Billing; AI demo-state switcher
+    ├── AIUsage.jsx            — AI Agents > Usage: credit-consumption analytics (range selector, stat cards, daily bar chart, by-agent breakdown bars)
     └── Login.jsx              — Dashboard login page (standalone, not in Layout)
 ```
 
@@ -68,7 +70,7 @@ src/
 **PRODUCTS:**
 - Chat & Messaging → Get Started `/chats/get-started`, Logs `/chats/logs`, Conversation Explorer `/chats/conversation-explorer`, Features `/chats/features`, Moderation (external link), Analytics (external link), Settings `/chats/settings`, Widgets `/chats/widgets`
 - Voice & Video (placeholder)
-- AI Agents → Get Started `/ai-agents/get-started`, AI Agents `/ai-agents`
+- AI Agents → Get Started `/ai-agents/get-started`, AI Agents `/ai-agents`, Usage `/ai-agents/usage`
 - BYO Agents → Get Started `/byo-agents/get-started`, BYO Agents `/byo-agents`, Custom Bots `/byo-agents/custom-bots`
 
 **FEATURES:**
@@ -159,6 +161,22 @@ Used by: Audit Logs
 - Pagination below table card
 - Three states: populated, empty (disabled buttons visible), plan-gated (blurred + upgrade CTA, disabled buttons visible)
 - Investigation pivot: clicking actor name applies purple filter chip
+
+### Pattern J: Multi-Product Pricing (Plans / Credits / Billing)
+Used by: Plans & Billing. App-global page that holds **two pricing models** — Chat
+(subscription by MAU) and AI Agents (credit consumption). See
+`docs/plans-billing-structure.md` for the full IA spec & rationale.
+
+- **Free-tier banner:** full-width `bg-amber-400` strip at very top of page content, centered text + inline "Upgrade Now" underlined link
+- **Header:** title + sub + **demo-state switcher** (prototype-only, top-right) for AI states (Trial active / ending / expired / Paid) — same pattern as SSO/Audit Logs state switchers
+- **Two-level nav:** **Product is the top-level axis** — `ProductSwitcher` (purple-filled active pill with product icon, `Chat & Messaging | AI Agents`) sits above the tabs and scopes the whole page. Below it, `UnderlineTabs` (Pattern B style, full-width baseline via `-mx-8 px-8`) are per-product sub-nav.
+- **Per-product tab sets:** Chat → Plans · Billing. AI Agents → Plans · Credits · Billing (`TABS` map). Switching to a product missing the active tab falls back to `plans`.
+- **Billing is per-product** (not unified) — each product renders its own `BillingView`. Monthly/Yearly `BillingToggle` (green `- 20%` pill) lives inside each Plans view.
+  - **Chat cards** (`ChatPlanCard`): 3-up MAU tiers, lifted purple "Most popular" ribbon, MAU `<input type=range accent-purple-600>`, purple/amber check-circle features, strikethrough on yearly
+  - **AI cards** (`AIPlanCard`): 4-up credit plans; icon tile + name, price OR "Pay-as-you-go"/"Let's talk", **credits chip** (`bg-purple-50` sparkle pill), CTA variants (primary/dark/outline). Highlighted "Core" = `border-2 border-purple-500 lg:-mt-4` with a floating `MOST POPULAR` pill (`absolute -top-3`). "Done-for-you" = dark card (`bg-gray-900 text-white`, white/10 chip)
+  - **AI trial banner** (`TrialBanner`): tone-driven (purple/amber/red) card with status pill, days-left, credits progress bar, Upgrade CTA — driven by demo state
+- **Credits tab** (`CreditsTab`, consumption products): balance hero (stacked plan-vs-top-up bar + HEALTHY pill), two stat cards (Plan credits "Resets monthly" / Top-up "Never expire"), Buy credits (quick-amount chips + live `amount × $0.04` total), Auto top-up (Toggle + threshold/amount inputs + Save)
+- **Billing (per-product, `BillingView`):** Current plan card (name + status pill + price line + optional 3-col stats grid), Payment method card (Visa when paid / "No payment method" + Add otherwise), Recent invoices list (`InvoiceRow`), Cancel subscription card. `ChatBilling` = Advanced/paid; `AIBilling` is demo-state-driven (trial states → Free Trial + Choose-a-plan + no payment/invoices; `paid` → Core + Visa + invoices + cancel)
 
 ## Components
 

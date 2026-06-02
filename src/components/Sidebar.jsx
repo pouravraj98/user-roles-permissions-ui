@@ -47,6 +47,7 @@ const navStructure = {
         submenu: [
           { id: 'ai-agents-get-started', label: 'Get Started / Integrate', path: '/ai-agents/get-started' },
           { id: 'ai-agents-list', label: 'AI Agents', path: '/ai-agents' },
+          { id: 'ai-agents-usage', label: 'Usage', path: '/ai-agents/usage' },
         ]
       },
       {
